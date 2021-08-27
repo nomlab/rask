@@ -15,8 +15,18 @@ projects = Project.create!([
                  { name: 'project2', user_id: users.first.id }
                ])
 
+status = State.create!([
+                 { name: 'todo'},
+                 { name: 'done'},
+                 { name: 'appoint'},
+                 { name: 'wait'},
+                 { name: 'someday'},
+                 { name: 'cancel'},
+                 { name: 'inbox'},
+                 { name: 'draft'},
+                ])
 
 Task.create!([
-              { content: 'task1', description: 'desc1', due_at: '2021-07-16 12:22:22', creator_id: users.first.id, assigner_id: users.first.id, project_id: projects.first.id },
-              { content: 'task2', description: 'desc2', due_at: '2021-07-16 12:22:22', creator_id: users.first.id, assigner_id: users.first.id, project_id: projects.first.id },
+              { content: 'task1', description: 'desc1', due_at: '2021-07-16 12:22:22', creator_id: users.first.id, assigner_id: users.first.id, project_id: projects.first.id, status: status.first.id},
+              { content: 'task2', description: 'desc2', due_at: '2021-07-16 12:22:22', creator_id: users.first.id, assigner_id: users.first.id, project_id: projects.first.id, status: status.first.id},
             ])

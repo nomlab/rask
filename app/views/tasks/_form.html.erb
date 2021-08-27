@@ -36,6 +36,11 @@
     <%= form.text_area :description, class: "border-2 w-full", rows: 10, placeholder: "タスクの説明を入力してください" %>
   </div>
 
+  <div class="field my-4">
+    <%= form.label :status, "状態", class: "text-xl block font-bold mb-2" %>
+    <%= form.select :status, @states.map { |s| [s.name, s.id] }, { include_blank: true }, class: "border-2 w-full" %>
+  </div>
+
   <div class="actions">
     <%= form.submit "保存", class: "bg-red-400 p-2 text-white rounded w-full" %>
   </div>
