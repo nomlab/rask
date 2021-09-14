@@ -16,14 +16,9 @@ projects = Project.create!([
                ])
 
 status = State.create!([
-                 { name: 'todo'},
-                 { name: 'done'},
-                 { name: 'appoint'},
-                 { name: 'wait'},
-                 { name: 'someday'},
-                 { name: 'cancel'},
-                 { name: 'inbox'},
-                 { name: 'draft'},
+                 { name: 'todo', priority: 1, color: "red", about:"やるべき Task"},
+                 { name: 'done', priority: 0, color: "black", about:"完了した Task"},
+                 { name: 'draft', priority: 2, color: "glay", about:"書きかけの Task"},
                 ])
 
 Task.create!([
