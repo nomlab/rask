@@ -2,11 +2,11 @@ require 'securerandom'
 
 class ApiTokensController < ApplicationController
   before_action :set_api_token, only: %i[ show edit update destroy ]
-  before_action :logged_in_user, only: %i[ new create edit update destroy]
+  before_action :logged_in_user, only: %i[ show new create edit update destroy]
 
   # GET /api_tokens or /api_tokens.json
   def index
-    @api_tokens = ApiToken.all
+    @api_tokens = ApiToken.where(user: current_user)
   end
 
   # GET /api_tokens/1 or /api_tokens/1.json

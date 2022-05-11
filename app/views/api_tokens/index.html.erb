@@ -10,20 +10,18 @@
 
 <% @api_tokens.each do |api_token| %>
   <% if logged_in? %>
-    <% if api_token.user_id == current_user.id %>
-      <div class="p-3 my-3 border rounded flex space-x-4">
-        <div>
-          <p> APIトークン: <%= api_token.secret %></p>
-          <p> トークン名: <%= api_token.description %></p>
-          <p> 有効期限: <%= api_token.expired_at %></p>
-        </div>
-        <div class="flex-1">
-        </div>
-          <% if logged_in? %>
-            <%= link_to '編集', edit_api_token_path(api_token) %>
-            <%= link_to '削除', api_token, method: :delete, data: { confirm: 'このAPIトークンを削除しますか？' } %>
-          <% end %>
+    <div class="p-3 my-3 border rounded flex space-x-4">
+      <div>
+        <p> APIトークン: <%= api_token.secret %></p>
+        <p> トークン名: <%= api_token.description %></p>
+        <p> 有効期限: <%= api_token.expired_at %></p>
       </div>
-    <% end %>
+      <div class="flex-1">
+      </div>
+        <% if logged_in? %>
+          <%= link_to '編集', edit_api_token_path(api_token) %>
+          <%= link_to '削除', api_token, method: :delete, data: { confirm: 'このAPIトークンを削除しますか？' } %>
+        <% end %>
+    </div>
   <% end %>
 <% end %>
