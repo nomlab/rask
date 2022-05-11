@@ -1,6 +1,7 @@
 Rails.application.routes.draw do
 
   resources :tags
+  resources :action_items
   resources :api_tokens
   resources :projects
   resources :tasks

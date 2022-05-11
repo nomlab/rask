@@ -10,7 +10,16 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_11_07_082503) do
+ActiveRecord::Schema.define(version: 2021_11_19_024205) do
+
+  create_table "action_items", force: :cascade do |t|
+    t.string "summary"
+    t.string "uid"
+    t.string "url"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["url"], name: "index_action_items_on_url", unique: true
+  end
 
   create_table "api_tokens", force: :cascade do |t|
     t.string "secret"

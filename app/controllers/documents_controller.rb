@@ -33,6 +33,7 @@ class DocumentsController < ApplicationController
   # POST /documents or /documents.json
   def create
     @document = current_user.documents.build(document_params)
+    @document.update(description: Document.add_unique_action_item_marker(@document[:description]))
 
     if @document.save #XXX: save! => save
       flash[:success] = "文書を追加しました"
@@ -44,6 +45,9 @@ class DocumentsController < ApplicationController
 
   # PATCH/PUT /documents/1 or /documents/1.json
   def update
+
+    @document.update(description: Document.add_unique_action_item_marker(@document[:description]))
+
     if @document.update(document_params)
       flash[:success] = "文書を更新しました"
       redirect_to documents_path
