@@ -11,7 +11,6 @@ DEFAULT_COMMAND="" # command which execute in container
 
 # constant value
 IMAGE_NAME=rask
-CONTAINER_NAME=rask
 SCRIPT_NAME=rask-docker.sh
 
 function print_usage(){
@@ -69,7 +68,7 @@ function main(){
             start $@
             ;;
         stop)
-            stop
+            stop $@
             ;;
         status)
             status
@@ -96,6 +95,7 @@ function start(){
     COMMAND=$DEFAULT_COMMAND
     ATTACH_OPTION=$DEFAULT_ATTACH_OPTION
     set_start_options $@
+    CONTAINER_NAME="${IMAGE_NAME}-${PORT}"
 
     if container_is_running $CONTAINER_NAME; then
         echo "$CONTAINER_NAME is already runnning"
@@ -158,27 +158,28 @@ function set_start_options(){
 }
 
 function stop(){
-    if ! container_is_running; then
-        echo "$CONTAINER_NAME is not running"
+    if ! container_is_running $1; then
+        echo "$1 is not running"
         exit 1
     fi
 
-    echo -n "trying to stop $CONTAINER_NAME... "
-    docker stop $CONTAINER_NAME > /dev/null && \
+    echo -n "trying to stop $1... "
+    docker stop $1 > /dev/null && \
         echo "done."
 }
 
 function status(){
-    if container_is_running; then
-        echo "$CONTAINER_NAME is running"
+    if container_is_running $IMAGE_NAME; then
+        echo "Running container is"
+        list_running_container $IMAGE_NAME
     else
-        echo "$CONTAINER_NAME is not running"
+        echo "Container is not running"
     fi
 }
 
 function restart(){
-    stop
-    start $@
+    stop $1
+    start ${@:2}
 }
 
 function user_belongs_dockergroup(){
@@ -189,8 +190,12 @@ function user_belongs_dockergroup(){
     fi
 }
 
+function list_running_container(){
+    docker ps -a --format "table {{.Names}}" | grep $1
+}
+
 function container_is_running(){
-    if [ $(docker ps -a --format "table {{.Names}}" |grep -cx "$CONTAINER_NAME") = 0 ]; then
+    if [ $(docker ps -a --format "table {{.Names}}" |grep -c $1) = 0 ]; then
         return 1
     else
         return 0
