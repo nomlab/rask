@@ -158,7 +158,23 @@ function set_start_options(){
 }
 
 function stop(){
-    if ! container_is_running $1; then
+    if [ $# -eq 0 ]; then
+        count_running_container $IMAGE_NAME
+        if [ $? = 1 ]; then
+            if container_exists "${IMAGE_NAME}-${DEFAULT_PORT}"; then
+                stop "${IMAGE_NAME}-${DEFAULT_PORT}"
+                exit 1
+            else
+                status $IMAGE_NAME
+                exit 1
+            fi
+        else
+            status $IMAGE_NAME
+            exit 1
+        fi
+    fi
+
+    if count_running_container $1; then
         echo "$1 is not running"
         exit 1
     fi
@@ -169,7 +185,7 @@ function stop(){
 }
 
 function status(){
-    if container_is_running $IMAGE_NAME; then
+    if ! count_running_container $IMAGE_NAME; then
         echo "Running container is"
         list_running_container $IMAGE_NAME
     else
@@ -195,11 +211,23 @@ function list_running_container(){
 }
 
 function container_is_running(){
-    if [ $(docker ps -a --format "table {{.Names}}" |grep -c $1) = 0 ]; then
+    if [ $(docker ps -a --format "table {{.Names}}" | grep -c $1) = 0 ]; then
         return 1
     else
         return 0
     fi
+}
+
+function container_exists(){
+    if [ $(docker ps -a --format "table {{.Names}}" | grep -cx $1) = 0 ]; then
+        return 1
+    else
+        return 0
+    fi
+}
+
+function count_running_container(){
+    return $(docker ps -a --format "table {{.Names}}" | grep -c $1)
 }
 
 function image_exists(){
@@ -219,7 +247,7 @@ function istty(){
 }
 
 function port_is_used(){
-    if [ $(ss -antu | grep -c ":$PORT ") != 0 ]; then
+    if [ $(lsof -i:$PORT | wc -l) != 0 ]; then
         return 0
     else
         return 1
