@@ -11,7 +11,6 @@ DEFAULT_COMMAND="" # command which execute in container
 
 # constant value
 IMAGE_NAME=rask
-CONTAINER_NAME=rask
 SCRIPT_NAME=rask-docker.sh
 
 function print_usage(){
@@ -69,7 +68,7 @@ function main(){
             start $@
             ;;
         stop)
-            stop
+            stop $@
             ;;
         status)
             status
@@ -96,6 +95,7 @@ function start(){
     COMMAND=$DEFAULT_COMMAND
     ATTACH_OPTION=$DEFAULT_ATTACH_OPTION
     set_start_options $@
+    CONTAINER_NAME="${IMAGE_NAME}-${PORT}"
 
     if container_is_running $CONTAINER_NAME; then
         echo "$CONTAINER_NAME is already runnning"
@@ -158,27 +158,44 @@ function set_start_options(){
 }
 
 function stop(){
-    if ! container_is_running; then
-        echo "$CONTAINER_NAME is not running"
+    if [ $# -eq 0 ]; then
+        count_running_container $IMAGE_NAME
+        if [ $? = 1 ]; then
+            if container_exists "${IMAGE_NAME}-${DEFAULT_PORT}"; then
+                stop "${IMAGE_NAME}-${DEFAULT_PORT}"
+                exit 1
+            else
+                status $IMAGE_NAME
+                exit 1
+            fi
+        else
+            status $IMAGE_NAME
+            exit 1
+        fi
+    fi
+
+    if count_running_container $1; then
+        echo "$1 is not running"
         exit 1
     fi
 
-    echo -n "trying to stop $CONTAINER_NAME... "
-    docker stop $CONTAINER_NAME > /dev/null && \
+    echo -n "trying to stop $1... "
+    docker stop $1 > /dev/null && \
         echo "done."
 }
 
 function status(){
-    if container_is_running; then
-        echo "$CONTAINER_NAME is running"
+    if ! count_running_container $IMAGE_NAME; then
+        echo "Running container is"
+        list_running_container $IMAGE_NAME
     else
-        echo "$CONTAINER_NAME is not running"
+        echo "Container is not running"
     fi
 }
 
 function restart(){
-    stop
-    start $@
+    stop $1
+    start ${@:2}
 }
 
 function user_belongs_dockergroup(){
@@ -189,12 +206,28 @@ function user_belongs_dockergroup(){
     fi
 }
 
+function list_running_container(){
+    docker ps -a --format "table {{.Names}}" | grep $1
+}
+
 function container_is_running(){
-    if [ $(docker ps -a --format "table {{.Names}}" |grep -cx "$CONTAINER_NAME") = 0 ]; then
+    if [ $(docker ps -a --format "table {{.Names}}" | grep -c $1) = 0 ]; then
         return 1
     else
         return 0
     fi
+}
+
+function container_exists(){
+    if [ $(docker ps -a --format "table {{.Names}}" | grep -cx $1) = 0 ]; then
+        return 1
+    else
+        return 0
+    fi
+}
+
+function count_running_container(){
+    return $(docker ps -a --format "table {{.Names}}" | grep -c $1)
 }
 
 function image_exists(){
@@ -214,7 +247,7 @@ function istty(){
 }
 
 function port_is_used(){
-    if [ $(ss -antu | grep -c ":$PORT ") != 0 ]; then
+    if [ $(lsof -i:$PORT | wc -l) != 0 ]; then
         return 0
     else
         return 1
