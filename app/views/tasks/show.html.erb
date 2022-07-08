@@ -7,7 +7,7 @@
 
 <div class="my-3">
   <p class="text-xl block font-bold mb-2">期限</p>
-  <%= @task.due_at %>
+  <%= @task.due_at.to_s(:datetime_jp) %>
 </div>
 
 <div class="my-3">
