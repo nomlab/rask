@@ -25,7 +25,13 @@
         <%= task.show_days_ago %>
       </p>
     </div>
-    <div class="flex-1"></div>
+    <div class="flex-1">
+      <% if task.overdue? %>
+      <p class="ongoing_mark"><%= "期限まで後" + task.days_to_deadlines + "日です！" %></p>
+      <% else %>
+      <p class="overdue_mark">期限切れです！</p>
+      <% end %>
+    </div>
     <% if logged_in? %>
       <%= link_to '詳細', task %>
       <%= link_to '編集', edit_task_path(task) %>

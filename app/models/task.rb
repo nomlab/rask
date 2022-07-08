@@ -12,4 +12,11 @@ class Task < ApplicationRecord
     day = ((self.created_at - Time.zone.now)/60/60/24).abs.round.to_s
     day + "日前"
   end
+  def days_to_deadlines
+    day = ((self.due_at - Time.zone.now)/60/60/24).round.to_s
+  end
+
+  def overdue?
+    Time.zone.now.before?(self.due_at)
+  end
 end
