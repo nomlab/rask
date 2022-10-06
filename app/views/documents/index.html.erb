@@ -4,7 +4,7 @@
   <%= link_to '新規作成', new_document_path, class: "my-auto text-white bg-red-400 rounded p-2" %>
 </div>
 
-<% @documents.each do |document| %>
+<% @documents.reverse_each do |document| %>
   <div class="p-3 my-3 border rounded flex space-x-4">
     <div>
       <p class="text-xl"><%= document.content %></p>
