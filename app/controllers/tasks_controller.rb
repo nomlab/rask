@@ -66,7 +66,8 @@ class TasksController < ApplicationController
   end
 
   # DELETE /tasks/1 or /tasks/1.json
-  def destroy
+  def destroy 
+    ActionItem.find_by(task_url: "/tasks/#{@task.id}").update(task_url: nil)
     @task.destroy
     respond_to do |format|
       format.html { redirect_to tasks_url, notice: "タスクを削除しました" }
