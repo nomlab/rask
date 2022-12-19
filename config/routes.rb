@@ -3,11 +3,19 @@ Rails.application.routes.draw do
   resources :tags
   resources :api_tokens
   resources :projects
-  resources :tasks
+  resources :tasks do
+    collection do
+      get 'search'
+    end
+  end
   resources :users
-  resources :documents
+  resources :documents do
+    collection do
+      get 'search'
+    end
+  end
   post '/documents/api_markdown', to: 'documents#api_markdown'
-  
+
   get '/', to: redirect('/projects')
 
   get '/auth/:provider/callback', to: 'sessions#create'

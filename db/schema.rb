@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_10_06_041706) do
+ActiveRecord::Schema.define(version: 2022_12_19_065934) do
 
   create_table "action_items", force: :cascade do |t|
     t.integer "uid"
@@ -46,6 +46,7 @@ ActiveRecord::Schema.define(version: 2022_10_06_041706) do
     t.text "location"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.text "keyword"
     t.index ["project_id"], name: "index_documents_on_project_id"
   end
 
@@ -92,6 +93,7 @@ ActiveRecord::Schema.define(version: 2022_10_06_041706) do
     t.datetime "updated_at", precision: 6, null: false
     t.integer "tag_id"
     t.integer "task_state_id"
+    t.text "keyword"
     t.index ["project_id"], name: "index_tasks_on_project_id"
     t.index ["tag_id"], name: "index_tasks_on_tag_id"
     t.index ["task_state_id"], name: "index_tasks_on_task_state_id"

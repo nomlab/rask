@@ -3,9 +3,17 @@ class DocumentsController < ApplicationController
   before_action :set_document, only: %i[ show edit update destroy ]
   before_action :logged_in_user, only: %i[ new create edit update destroy]
   protect_from_forgery :except => [:api_markdown]
+  before_action :search
+
+  def search
+    # q is the value entered in the search form
+    @q = Document.ransack(params[:q])
+  end
+
   # GET /documents or /documents.json
   def index
-    @documents = Document.page(params[:page]).per(50).includes(:user).order(start_at: "DESC")
+  #  @documents = Document.page(params[:page]).per(50).includes(:user).order(start_at: "DESC")
+    @documents = @q.result.page(params[:page]).per(50).includes(:user).order(start_at: "DESC")
   end
 
   # GET /documents/1 or /documents/1.json
@@ -38,6 +46,7 @@ class DocumentsController < ApplicationController
     parse_tag_names(params[:tag_names]) if params[:tag_names]
 
     if @document.save #XXX: save! => save
+      Document.find_by(id: @document.id).update(keyword: "#{@document.content}" + "#{@document.assigner.name}" + @document.project.name)
       flash[:success] = "文書を追加しました"
       redirect_to documents_path
     else
@@ -49,6 +58,7 @@ class DocumentsController < ApplicationController
   def update
     parse_tag_names(params[:tag_names]) if params[:tag_names]
     if @document.update(document_params)
+      Document.find_by(id: @document.id).update(keyword: "#{@document.content}" + "#{@document.assigner.name}" + @document.project.name)
       flash[:success] = "文書を更新しました"
       redirect_to documents_path
     else

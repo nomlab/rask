@@ -2,10 +2,16 @@
 class TasksController < ApplicationController
   before_action :set_task, only: %i[ show edit update destroy ]
   before_action :logged_in_user, only: %i[ new create edit update destroy]
+  before_action :search
+
+  def search
+    # q is the value entered in the search form
+    @q = Task.ransack(params[:q])
+  end
 
   # GET /tasks or /tasks.json
   def index
-    @tasks = Task.page(params[:page]).per(50).includes(:user, :state)
+    @tasks = @q.result.page(params[:page]).per(50).includes(:user, :state)
   end
 
   # GET /tasks/1 or /tasks/1.json
@@ -43,6 +49,7 @@ class TasksController < ApplicationController
     parse_tag_names(params[:tag_names]) if params[:tag_names]
 
     if @task.save!
+      Task.find_by(id: @task.id).update(keyword: "#{@task.content}" + "#{@task.assigner.name}" + @task.project.name)
       flash[:success] = "タスクを追加しました"
       matched = task_params[:description].match(/\[AI([0-9]+)\]/)
       if matched != nil
@@ -58,6 +65,7 @@ class TasksController < ApplicationController
   def update
     parse_tag_names(params[:tag_names]) if params[:tag_names]
     if @task.update(task_params)
+      Task.find_by(id: @task.id).update(keyword: "#{@task.content}" + "#{@task.assigner.name}" + @task.project.name)
       flash[:success] = "タスクを更新しました"
       redirect_to tasks_path
     else
