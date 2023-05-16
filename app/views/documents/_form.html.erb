@@ -98,30 +98,6 @@
     <%= form.submit "保存", class: "bg-red-400 p-2 text-white rounded w-full" %>
   </div>
 
-
-  <script>    
-    <%# $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) { %>
-	<%# const text = document.getElementById("write-area").value; %>
-
-	<%# $.post('/documents/api_markdown', {text: text}, function(data){ %>
-	    <%# $(document.getElementById("preview-area")).html(data) %>
-	<%# }); %>
-    <%# }); %>
-  document.getElementById('preview').onchange=function(){
-    const text = document.getElementById("write-area").value
-    const preview = document.getElementById("preview-area")
-
-const obj = {text: text};
-const method = "POST";
-const body = JSON.stringify(obj);
-const headers = {
-  'Accept': 'application/json',
-  'Content-Type': 'application/json'
-};
-<%# fetch("/documents/api_markdown", {method, headers, body}).then((res)=> res.json()).then((obj) => {preview.insertAdjacentHTML("afterbegin", obj.text)}).catch(console.error); %>
-fetch("/documents/api_markdown", {method, headers, body}).then((res)=> res.json()).then((obj) => {preview.innerHTML=obj.text}).catch(console.error);
-<%# fetch("/documents/api_markdown", {method, headers, body}).then((res)=> {console.log(res.json())}).catch(console.error); %>
-  }
-  </script>
+  <%= javascript_pack_tag 'preview' %>
 
 <% end %>
