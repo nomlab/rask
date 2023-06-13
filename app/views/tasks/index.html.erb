@@ -16,10 +16,11 @@
     <div>
       <p class="text-xl">
         <% if task.state.name=="todo" %>
-          <i class="far fa-dot-circle"></i>
-        <% end %>
-        <% if task.state.name=="done" %>
-          <i class="far fa-check-circle"></i>
+          <i id="task_<%= task.id %>" class="far fa-dot-circle"></i>
+        <% elsif task.state.name=="done" %>
+          <i id="task_<%= task.id %>" class="far fa-check-circle"></i>
+        <% elsif task.state.name="draft" %>
+          <i id="task_<%= task.id %>" class="far fa-circle"></i>
         <% end %>
         <%= link_to task.content, task %>
       </p>
@@ -45,6 +46,7 @@
       <%= link_to '詳細', task %>
       <%= link_to '編集', edit_task_path(task) %>
       <%= link_to '削除', task, method: :delete, data: { confirm: 'このタスクを削除しますか？' } %>
+      <%= link_to '完了', complete_path(task, task_state_name: "done"), method: :put, onclick: "updateState(#{task.id})" %>
     <% end %>
   </div>
 <% end %>
@@ -54,3 +56,11 @@
     <%= raw(paginate @tasks) %>
   </div>
 </div>
+
+<script>
+  function updateState(task_id){
+    id = "task_" + task_id;
+    element = document.getElementById(id);
+    element.classList.toggle('fa-check-circle');
+  }
+</script>
