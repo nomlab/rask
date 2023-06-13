@@ -1,8 +1,8 @@
 # coding: utf-8
 class TasksController < ApplicationController
-  before_action :set_task, only: %i[ show edit update destroy ]
+  before_action :set_task, only: %i[ show edit update destroy complete ]
   before_action :get_form_data, only: %i[ new edit ]
-  before_action :logged_in_user, only: %i[ new create edit update destroy]
+  before_action :logged_in_user, only: %i[ new create edit update destroy complete ]
   before_action :search, only: %i[ index ]
 
   def search
@@ -67,6 +67,16 @@ class TasksController < ApplicationController
     end
   end
 
+  def complete
+    task_state_name = params[:task_state_name]
+    @task.task_state_id = TaskState.find_by(name: task_state_name).id
+    if @task.update(task_state_params)
+      flash[:success] = "タスクの状態を更新しました"
+    else
+      flash[:warning] = "タスクの状態の更新に失敗しました"
+    end
+  end
+
   # DELETE /tasks/1 or /tasks/1.json
   def destroy
     @task.destroy
@@ -93,6 +103,10 @@ class TasksController < ApplicationController
   # Only allow a list of trusted parameters through.
   def task_params
     params.require(:task).permit(:assigner_id, :due_at, :content, :description, :project_id, :task_state_id)
+  end
+
+  def task_state_params
+    params.permit(:task_state_id)
   end
 
   def parse_tag_names(tag_names)
