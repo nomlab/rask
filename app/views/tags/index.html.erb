@@ -4,18 +4,4 @@
   <%= link_to '新規作成', new_tag_path, class: "my-auto text-white bg-red-400 rounded p-2" %>
 </div>
 
-<% @tags.each do |tag| %>
-  <div class="p-3 my-3 border rounded flex space-x-4">
-    <div>
-      <p class="text-xl"><%= tag.name %></p>
-      <p>タスク数 : <%= tag.tasks.count %></p>
-      <p>文書数 : <%= tag.documents.count %></p>
-    </div>
-    <div class="flex-1"></div>
-    <% if logged_in? %>
-      <%= link_to '詳細', tag %>
-      <%= link_to '編集', edit_tag_path(tag) %>
-      <%= link_to '削除', tag, method: :delete, data: { confirm: 'このタグを削除しますか？' } %>
-    <% end %>
-  </div>
-<% end %>
+<%= render @tags %>

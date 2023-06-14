@@ -2,24 +2,4 @@
   <%= render 'layouts/h1', title: "ユーザ一覧" %>
 </div>
 
-<% @users.each do |user| %>
-  <div class="p-3 my-3 border rounded flex space-x-4">
-    <div class="user-tile <%= 'text-gray-400' unless user.active %>">
-      <div class="user-tile-icon">
-        <% if user.active %>
-          <i class="fas fa-user-alt fa-lg"></i>
-        <% else %>
-          <i class="fas fa-user-alt-slash fa-lg"></i>
-        <% end %>
-      </div>
-      <p class="user-tile-profile text-xl">ユーザ名: <%= user.name %></p>
-      <p class="user-tile-profile text-xl">アカウント名:<%= user.screen_name %></p>
-    </div>
-    <div class="flex-1"></div>
-    <% if logged_in?  && current_user?(user) %>
-      <%= link_to '詳細', user %>
-      <%= link_to '編集', edit_user_path(user) %>
-      <%= link_to '削除', user, method: :delete, data: { confirm: '退会しますか？' } %>
-    <% end %>
-  </div>
-<% end %>
+<%= render @users %>
