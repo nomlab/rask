@@ -267,3 +267,8 @@
    6) deleted になっていたファイルを精査
       + 必要なら本当に消す
       + 修正して取り込む
+** メモ
+*** config/environments/development.rb
+    以下の 2点を消したのがよかったかどうか要検討
+    config.file_watcher = ActiveSupport::EventedFileUpdateChecker
+    config.assets.debug = true

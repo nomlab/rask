@@ -3,8 +3,9 @@
 #
 # Examples:
 #
-#   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
-#   Character.create(name: 'Luke', movie: movies.first)
+#   movies = Movie.create([{ name: "Star Wars" }, { name: "Lord of the Rings" }])
+#   Character.create(name: "Luke", movie: movies.first)
+
 task_states = TaskState.create!([
                                   { name: 'todo', priority: 1, color: "red", about:"やるべき Task"},
                                   { name: 'done', priority: 0, color: "black", about:"完了した Task"},
