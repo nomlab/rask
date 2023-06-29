@@ -1,0 +1,8 @@
+ja:
+  activerecord:
+    models:
+      student: 学生
+    attributes:
+      student:
+        name: 氏名
+        number: 学生番号

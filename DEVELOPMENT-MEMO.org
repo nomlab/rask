@@ -1,0 +1,269 @@
+* 2023-06-29 Thu Rails 7 移行の準備
+** rails-new でやったこと
+*** rails new rask
+    mkdir rask
+    cd rask
+    bundle init
+    echo 'gem "rails"' >> Gemfile
+    bundle config set path 'vendor/bundle'
+    bundle install
+    bundle exec rails new . --force --css=bootstrap
+    echo 'gem "bootstrap_form"' >> Gemfile
+    echo 'gem "kaminari"' >> Gemfile
+    echo 'gem "ransack"' >> Gemfile
+    bundle install
+    bin/rails generate kaminari:views bootstrap4
+    bin/rails generate kaminari:config
+    curl -L "https://raw.github.com/github/gitignore/master/Rails.gitignore" >> .gitignore
+*** Add setup for Japanese
+    Set time_zone in config/application.rb to "Tokyo"
+    curl -L https://raw.githubusercontent.com/svenfuchs/rails-i18n/master/rails/locale/ja.yml > config/locales/ja.yml
+    Create sample config/locales/activerecord.ja.yml
+    curl -L https://raw.githubusercontent.com/tigrish/kaminari-i18n/master/config/locales/ja.yml > config/locales/kaminari.ja.yml
+    Add CSS to app/assets/stylesheets/application.bootstrap.scss
+
+** 生じた差分
+*** deleted
+    .browserslistrc
+    .dockerignore
+    .env.example
+    .github/workflows/ruby.yml
+    .nvmrc
+    Dockerfile
+    LICENSE
+    Makefile
+    app/assets/stylesheets/application.scss
+    app/assets/stylesheets/github-markdown.css
+    app/assets/stylesheets/jfm.scss
+    app/assets/stylesheets/scaffolds.scss
+    app/assets/stylesheets/sessions.scss
+    app/assets/stylesheets/tab.css
+    app/assets/stylesheets/tasks.scss
+    app/assets/stylesheets/users.scss
+    app/controllers/api_tokens_controller.rb
+    app/controllers/documents_controller.rb
+    app/controllers/projects_controller.rb
+    app/controllers/sessions_controller.rb
+    app/controllers/tags_controller.rb
+    app/controllers/tasks_controller.rb
+    app/controllers/users_controller.rb
+    app/helpers/api_tokens_helper.rb
+    app/helpers/documents_helper.rb
+    app/helpers/projects_helper.rb
+    app/helpers/sessions_helper.rb
+    app/helpers/tags_helper.rb
+    app/helpers/tasks_helper.rb
+    app/helpers/users_helper.rb
+    app/javascript/channels/consumer.js
+    app/javascript/channels/index.js
+    app/javascript/packs/application.js
+    app/javascript/packs/documents.js
+    app/javascript/packs/tag_completion.js
+    app/javascript/stylesheets/application.scss
+    app/javascript/stylesheets/tailwind.config.js
+    app/models/action_item.rb
+    app/models/api_token.rb
+    app/models/document.rb
+    app/models/document_tag.rb
+    app/models/project.rb
+    app/models/tag.rb
+    app/models/task.rb
+    app/models/task_state.rb
+    app/models/task_tag.rb
+    app/models/user.rb
+    app/views/api_tokens/_api_token.json.jbuilder
+    app/views/api_tokens/_form.html.erb
+    app/views/api_tokens/edit.html.erb
+    app/views/api_tokens/index.html.erb
+    app/views/api_tokens/index.json.jbuilder
+    app/views/api_tokens/new.html.erb
+    app/views/api_tokens/show.html.erb
+    app/views/api_tokens/show.json.jbuilder
+    app/views/documents/_document.json.jbuilder
+    app/views/documents/_form.html.erb
+    app/views/documents/edit.html.erb
+    app/views/documents/index.html.erb
+    app/views/documents/index.json.jbuilder
+    app/views/documents/new.html.erb
+    app/views/documents/show.html.erb
+    app/views/documents/show.json.jbuilder
+    app/views/layouts/_error_messages.html.erb
+    app/views/layouts/_h1.html.erb
+    app/views/layouts/_header.html.erb
+    app/views/layouts/_menu.html.erb
+    app/views/projects/_form.html.erb
+    app/views/projects/_project.json.jbuilder
+    app/views/projects/edit.html.erb
+    app/views/projects/index.html.erb
+    app/views/projects/index.json.jbuilder
+    app/views/projects/new.html.erb
+    app/views/projects/show.html.erb
+    app/views/projects/show.json.jbuilder
+    app/views/sessions/new.html.erb
+    app/views/tags/_form.html.erb
+    app/views/tags/_tag.json.jbuilder
+    app/views/tags/edit.html.erb
+    app/views/tags/index.html.erb
+    app/views/tags/index.json.jbuilder
+    app/views/tags/new.html.erb
+    app/views/tags/show.html.erb
+    app/views/tags/show.json.jbuilder
+    app/views/tasks/_form.html.erb
+    app/views/tasks/_task.json.jbuilder
+    app/views/tasks/edit.html.erb
+    app/views/tasks/index.html.erb
+    app/views/tasks/index.json.jbuilder
+    app/views/tasks/new.html.erb
+    app/views/tasks/show.html.erb
+    app/views/tasks/show.json.jbuilder
+    app/views/users/_edit_form.html.erb
+    app/views/users/_user.json.jbuilder
+    app/views/users/edit.html.erb
+    app/views/users/index.html.erb
+    app/views/users/index.json.jbuilder
+    app/views/users/show.html.erb
+    app/views/users/show.json.jbuilder
+    babel.config.js
+    bin/spring
+    bin/webpack
+    bin/webpack-dev-server
+    bin/yarn
+    config/initializers/application_controller_renderer.rb
+    config/initializers/backtrace_silencers.rb
+    config/initializers/cookies_serializer.rb
+    config/initializers/mime_types.rb
+    config/initializers/omniauth.rb
+    config/initializers/ransack.rb
+    config/initializers/time_formats.rb
+    config/initializers/wrap_parameters.rb
+    config/spring.rb
+    config/webpack/development.js
+    config/webpack/environment.js
+    config/webpack/production.js
+    config/webpack/test.js
+    config/webpacker.yml
+    db/migrate/20210531014837_create_users.rb
+    db/migrate/20210555023842_create_projects.rb
+    db/migrate/20210601013422_create_tasks.rb
+    db/migrate/20210826054342_create_tags.rb
+    db/migrate/20210827051425_add_tag_to_tasks.rb
+    db/migrate/20210827112700_create_api_tokens.rb
+    db/migrate/20210904050454_add_omni_auth_columns_to_users.rb
+    db/migrate/20210910090334_create_documents.rb
+    db/migrate/20211107082102_create_task_states.rb
+    db/migrate/20211107082503_add_state_id_to_tasks.rb
+    db/migrate/20211119035337_create_task_tags.rb
+    db/migrate/20221005090549_create_document_tags.rb
+    db/migrate/20221006041706_create_action_items.rb
+    db/migrate/20230215020927_remove_assigner_id_from_documents.rb
+    db/migrate/20230418070335_add_dependent_to_projects.rb
+    db/migrate/20230418101055_add_active_to_users.rb
+    db/schema.rb
+    docker-compose.yml
+    docs/design_doc.md
+    docs/how_to_contribute.md
+    docs/images/maketask.PNG
+    docs/images/rask_design_document.png
+    docs/images/resistration.PNG
+    docs/images/task.PNG
+    docs/images/user.PNG
+    docs/index.md
+    lib/tasks/create_user.rake
+    postcss.config.js
+    scripts/docker/Dockerfile_production
+    scripts/docker/docker-entrypoint.sh
+    scripts/docker/docker-setup.sh
+    scripts/rask-docker.sh
+    scripts/setup-docker.sh
+    scripts/systemd_conf/rask.service
+    test/controllers/api_tokens_controller_test.rb
+    test/controllers/projects_controller_test.rb
+    test/controllers/sessions_controller_test.rb
+    test/controllers/tags_controller_test.rb
+    test/controllers/tasks_controller_test.rb
+    test/controllers/users_controller_test.rb
+    test/fixtures/action_items.yml
+    test/fixtures/api_tokens.yml
+    test/fixtures/document_tags.yml
+    test/fixtures/projects.yml
+    test/fixtures/tags.yml
+    test/fixtures/task_states.yml
+    test/fixtures/task_tags.yml
+    test/fixtures/tasks.yml
+    test/fixtures/users.yml
+    test/models/action_item_test.rb
+    test/models/api_token_test.rb
+    test/models/document_tag_test.rb
+    test/models/project_test.rb
+    test/models/tag_test.rb
+    test/models/task_state_test.rb
+    test/models/task_tag_test.rb
+    test/models/task_test.rb
+    test/models/user_test.rb
+    test/system/api_tokens_test.rb
+    test/system/projects_test.rb
+    test/system/tags_test.rb
+    test/system/tasks_test.rb
+    test/system/users_test.rb
+*** modified
+    .gitattributes
+    .gitignore
+    .ruby-version
+    Gemfile
+    Gemfile.lock
+    README.md
+    app/assets/config/manifest.js
+    app/controllers/application_controller.rb
+    app/helpers/application_helper.rb
+    app/mailers/application_mailer.rb
+    app/models/application_record.rb
+    app/views/layouts/application.html.erb
+    bin/rails
+    bin/rake
+    bin/setup
+    config/application.rb
+    config/boot.rb
+    config/credentials.yml.enc
+    config/database.yml
+    config/environments/development.rb
+    config/environments/production.rb
+    config/environments/test.rb
+    config/initializers/assets.rb
+    config/initializers/content_security_policy.rb
+    config/initializers/filter_parameter_logging.rb
+    config/initializers/inflections.rb
+    config/initializers/kaminari_config.rb
+    config/locales/en.yml
+    config/puma.rb
+    config/routes.rb
+    config/storage.yml
+    db/seeds.rb
+    package.json
+    test/test_helper.rb
+    yarn.lock
+*** unknown
+    DEVELOPMENT-MEMO.org
+    .node-version
+    Procfile.dev
+    app/assets/builds/
+    app/assets/stylesheets/application.bootstrap.scss
+    app/javascript/application.js
+    app/javascript/controllers/
+    app/views/kaminari/
+    bin/bundle
+    bin/dev
+    config/locales/activerecord.ja.yml
+    config/locales/ja.yml
+    config/locales/kaminari.ja.yml
+    status.log
+    vendor/
+
+** 差分を吸収する手順
+   1) rails-7 ブランチを切る
+   2) unknown を取り込む
+   3) modified から必要な差分を手動でマージ
+   4) deleted は，ひとまずそのまま
+   5) rails-7 ブランチを push
+   6) deleted になっていたファイルを精査
+      + 必要なら本当に消す
+      + 修正して取り込む
