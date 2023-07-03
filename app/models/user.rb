@@ -33,4 +33,8 @@ class User < ApplicationRecord
             user.avatar_url  = info["image"]
         end
     end
+
+    def self.ransackable_attributes(auth_object = nil)
+      ["active", "avatar_url", "created_at", "id", "name", "password_digest", "provider", "screen_name", "uid", "updated_at"]
+    end
 end

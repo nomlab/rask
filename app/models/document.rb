@@ -25,4 +25,12 @@ class Document < ApplicationRecord
     }
     self.description = desc
   end
+
+  def self.ransackable_attributes(auth_object = nil)
+    ["content", "created_at", "creator_id", "description", "end_at", "id", "location", "project_id", "start_at", "updated_at"]
+  end
+
+  def self.ransackable_associations(auth_object = nil)
+    ["creator", "document_tags", "project", "tags", "user"]
+  end
 end
