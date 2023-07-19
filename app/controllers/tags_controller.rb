@@ -51,10 +51,17 @@ class TagsController < ApplicationController
 
   # DELETE /tags/1 or /tags/1.json
   def destroy
-    @tag.destroy
-    respond_to do |format|
-      format.html { redirect_to tags_url, notice: "タグを削除しました．" }
-      format.json { head :no_content }
+    begin
+      @tag.destroy
+      respond_to do |format|
+        format.html { redirect_to tags_url, notice: "タグを削除しました．" }
+        format.json { head :no_content }
+      end
+    rescue ActiveRecord::DeleteRestrictionError => e
+      respond_to do |format|
+        format.html { redirect_to tags_url, alert: @tag.name + "に紐づいているタスク，ドキュメントがあるため削除できません．"}
+        format.json { render json: @tag.errors, status: :precondition_failed}
+      end
     end
   end
 
