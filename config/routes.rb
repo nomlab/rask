@@ -8,7 +8,7 @@ Rails.application.routes.draw do
   resources :documents
   post '/documents/api_markdown', to: 'documents#api_markdown'
   
-  get '/', to: redirect('/projects')
+  get '/', to: redirect('/tasks')
 
   get '/auth/:provider/callback', to: 'sessions#create'
   delete '/logout',  to: 'sessions#destroy'
