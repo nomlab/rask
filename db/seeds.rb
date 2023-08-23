@@ -12,8 +12,8 @@ task_states = TaskState.create!([
                                 ])
 
 users = User.create!([
-                       { name: 'user1' },
-                       { name: 'user2' }
+                       { name: 'User1 Name', screen_name: 'user1' },
+                       { name: 'User2 Name', screen_name: 'user2' }
                      ])
 
 projects = Project.create!([
