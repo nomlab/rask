@@ -51,12 +51,26 @@
     <%= form.text_field :content, class: "border-2 w-full", placeholder: "タスクの内容を入力してください", required: true %>
   </div>
 
-  <div class="field my-4">
-    <%= form.label :description, "説明", class: "text-xl block font-bold mb-2" %>
-    <%= form.text_area :description, class: "border-2 w-full", rows: 10, placeholder: "タスクの説明を入力してください" %>
+  <div class="tabs">
+    <input id="write" type="radio" name="tab_item" checked>
+    <label class="tab_item" for="write">Write</label>
+    <input id="preview" type="radio" name="tab_item">
+    <label class="tab_item" for="preview">Preview</label>
+    <div class="tab_content" id="write_content">
+      <%= form.text_area :description, class: "border-2 w-full", rows: 10, id: "write-area", placeholder: "内容を入力してください" %>
+    </div>
+    <div class="tab_content" id="preview_content">
+      <div style="height: 300px" class="overflow-y-scroll">
+        <div id="preview-area" class="markdown-body p-12 list-style-none">
+        </div>
+      </div>
+    </div>
   </div>
 
   <div class="actions">
     <%= form.submit "保存", class: "bg-red-400 p-2 text-white rounded w-full" %>
   </div>
+
+  <%= javascript_pack_tag 'preview' %>
+
 <% end %>
