@@ -5,7 +5,7 @@
 
 import '@fortawesome/fontawesome-free/js/all';
 import Rails from "@rails/ujs"
-import Turbolinks from "turbolinks"
+// import Turbolinks from "turbolinks"
 import * as ActiveStorage from "@rails/activestorage"
 import "channels"
 // ここから追加
@@ -15,7 +15,8 @@ window.$ = window.jQuery = jQuery;
 import "jquery-textcomplete"
 
 Rails.start()
-Turbolinks.start()
+// Turbolinks.start()
 ActiveStorage.start()
 
 import "stylesheets/application"
+import "@hotwired/turbo-rails"

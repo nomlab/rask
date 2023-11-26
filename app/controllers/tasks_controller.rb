@@ -31,6 +31,12 @@ class TasksController < ApplicationController
       @q.sorts = sort_check(params[:q][:s])
     end
     @tasks = @q.result.page(params[:page]).per(50).includes(:user, :state)
+    @mytasks = @q.result.joins(:user).where(users: {screen_name: current_user&.screen_name}).page(params[:page]).per(50).includes(:user, :state)
+
+    respond_to do |format|
+      format.html
+      format.turbo_stream
+    end
   end
 
   # GET /tasks/1 or /tasks/1.json

@@ -23,45 +23,34 @@
   <%= link_to '新規作成', new_task_path, class: "my-auto text-white bg-red-400 rounded p-2" %>
 </div>
 
-<% @tasks.each do |task| %>
-  <div class="p-3 my-3 border rounded flex space-x-4">
-    <div>
-      <p class="text-xl">
-        <% if task.completed? %>
-          <i class="far fa-check-circle" style="color: <%= task.state.color %>;"></i>
-        <% else %>
-          <i class="far fa-dot-circle" style="color: <%= task.state.color %>;"></i>
-        <% end %>
-        <%= link_to task.content, task %>
-      </p>
-      <p>
-      <% if task.project %>
-        <%= link_to task.project.name, task.project %>
-      <% end %>
-      <%= link_to task.assigner.name, task.assigner %>
-      <%= task.show_days_ago.round.to_s + "日前" %>
-      <% task.tags.each do |tag| %>
-        <%= link_to tag_label(tag), tag %>
-      <% end %>
-      </p>
-    </div>
-    <div class="flex-1">
-      <% if task.overdue? %>
-        <p class="overdue_mark">期限切れです！</p>
-      <% else %>
-        <p class="ongoing_mark"><%= days_to_deadline_as_string task %></p>
-      <% end %>
-    </div>
-    <% if logged_in? %>
-      <%= link_to '詳細', task %>
-      <%= link_to '編集', edit_task_path(task) %>
-      <%= link_to '削除', task, method: :delete, data: { confirm: 'このタスクを削除しますか？' } %>
+<ul class="text-center nav nav-tabs" id="myTab" role="tablist">
+  <li class="nav-item w-50 bg-light">
+    <a class="nav-link active link-text" id="my-tasks-tab" data-toggle="tab" href="#my-tasks" role="tab" aria-controls="my-tasks" aria-selected="true"><%= current_user&.screen_name %>のタスク</a>
+  </li>
+  <li class="nav-item w-50 bg-light">
+    <a class="nav-link link-text" id="all-tasks-tab" data-toggle="tab" href="#all-tasks" role="tab" aria-controls="all-tasks" aria-selected="false">すべてのタスク</a>
+  </li>
+</ul>
+
+<div class="tab-content" id="myTabContent">
+  <div class="tab-pane fade show active" id="my-tasks" role="tabpanel" aria-labelledby="my-tasks-tab">
+    <%= turbo_frame_tag "my-tasks" do %>
+      <%= render @mytasks %>
+      <div class="row">
+        <div class="col-md-12 col-sm-12 text-center hidden-xs">
+          <%= raw(paginate @mytasks) %>
+        </div>
+      </div>
     <% end %>
   </div>
-<% end %>
-
-<div class="row">
-  <div class="col-md-12 col-sm-12 text-center hidden-xs">
-    <%= raw(paginate @tasks) %>
+  <div class="mb-5 tab-pane fade" id="all-tasks" role="tabpanel" aria-labelledby="all-tasks-tab">
+    <%= turbo_frame_tag "all-tasks" do %>
+      <%= render @tasks %>
+      <div class="row">
+        <div class="col-md-12 col-sm-12 text-center hidden-xs">
+          <%= raw(paginate @tasks) %>
+        </div>
+      </div>
+    <% end %>
   </div>
 </div>
