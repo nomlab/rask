@@ -21,12 +21,11 @@ class TaskTagTest < ActiveSupport::TestCase
   end
 
   test "Should delete tag which has no tasks" do
-    skip ''
     Task.create
     Tag.create
     TaskTag.create(task_id: Task.last.id, tag_id: Tag.last.id)
     Task.last.delete
-    assert TaskTag.last.destroy.valid?
+    assert Tag.last.destroy
   end
 
   test "Should not delete tag which has tasks" do
