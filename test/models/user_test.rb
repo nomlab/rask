@@ -33,7 +33,6 @@ class UserTest < ActiveSupport::TestCase
   end
 
   test "should not create user without provider" do
-    skip ''
     user = @user_template.clone
     user[:provider] = nil
     assert_not User.new(user).save

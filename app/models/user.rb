@@ -10,6 +10,8 @@ class User < ApplicationRecord
     validates_length_of :password, maximum: ActiveModel::SecurePassword::MAX_PASSWORD_LENGTH_ALLOWED
     validates_confirmation_of :password, allow_blank: true
 
+    validates :provider, presence: true
+
     has_many :assigned_tasks, foreign_key: 'assigner_id' ,class_name: 'Task'
     has_many :tasks, foreign_key: 'creator_id'
     has_many :projects
