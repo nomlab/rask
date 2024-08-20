@@ -2,39 +2,35 @@ require "test_helper"
 
 class ActionItemTest < ActiveSupport::TestCase
   test "Should create with correct data" do
-    assert ActionItem.new.valid?
+    id = ActionItem.maximum(:id).to_i.next
+    assert ActionItem.new(id: id, task_url: '/github.com').save
   end
 
-  test "Should be added uid to created action_item" do
-    ActionItem.create
-    assert ActionItem.last.uid.present?
+  test "Should create action_item without task_url" do
+    id = ActionItem.maximum(:id).to_i.next
+    assert ActionItem.new(id: id).save
+  end
+
+  test "Should be existed uid to created action_item" do
+    id = ActionItem.maximum(:id).to_i.next
+    ActionItem.new(id: id).save
+    item = ActionItem.find(id)
+    assert item.uid.present?
   end
 
   test "Should be added task_url to created action_item" do
-    ActionItem.create
-    assert ActionItem.last.save(task_url: '/test')
+    assert ActionItem.last.update(task_url: '/localhost:3000')
   end
 
   test "Should delete action_item" do
-    ActionItem.create
     assert ActionItem.last.destroy
   end
 
-  test "Should not update uid that is added once" do
-    skip ''
-    ActionItem.create
-    assert_not ActionItem.last.update(uid: -1)
-  end
-
-  test "Should not update uid with uid already exists" do
-    skip ''
-    ActionItem.create
-    assert_not ActionItem.last.update(uid: ActionItem.first.uid)
+  test "Should not update uid" do
+    assert_not ActionItem.last.update(uid: 1)
   end
 
   test "Should not update task_url with string other than URL" do
-    skip ''
-    ActionItem.create
-    assert_not ActionItem.last.save(task_url: '#This is not url#')
+    assert_not ActionItem.last.update(task_url: '#This is not url#')
   end
 end
