@@ -1,7 +1,11 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
+  id: 1
+  uid: "0001"
   task_url: /1
 
 two:
-  task_url: /1
+  id: 2
+  uid: "0002"
+  task_url: /2
