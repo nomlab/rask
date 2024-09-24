@@ -22,6 +22,11 @@ class User < ApplicationRecord
     validates :name, presence: true, uniqueness: true
     validates :screen_name, presence: true
 
+    before_destroy :prevent_destroy
+     def prevent_destroy
+       throw(:abort)
+     end
+
     def User.digest(string)
         cost = ActiveModel::SecurePassword.min_cost ? BCrypt::Engine::MIN_COST :
                  BCrypt::Engine.cost

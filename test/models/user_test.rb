@@ -81,7 +81,6 @@ class UserTest < ActiveSupport::TestCase
   end
 
   test "should not delete user" do
-    skip ''
     user = @user_template.clone
     user = User.create(user)
     assert_not user.destroy
