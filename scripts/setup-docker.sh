@@ -76,7 +76,7 @@ function main() {
     echo "Creating Rask image"
     UID_SH=$(id -u $1)
     if ! docker buildx build \
-        -t rask \
+        -t rask:$(git describe --tags --abbrev=0 || echo latest) \
         -f scripts/docker/Dockerfile_production \
         --secret id=master-key,src=$PWD/config/master.key \
         --build-arg UID=$UID_SH .

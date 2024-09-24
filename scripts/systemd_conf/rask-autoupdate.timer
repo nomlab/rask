@@ -1,0 +1,11 @@
+[Unit]
+Description=Trigger Rask updater
+
+[Timer]
+Persistent=true
+
+# Change the time for your needs
+OnCalendar=*-*-* 10:00:00
+
+[Install]
+WantedBy=timers.target

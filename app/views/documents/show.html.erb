@@ -25,7 +25,7 @@
   <div class="markdown-body">
     <% desc = JayFlavoredMarkdownConverter.new(@document.description).content %>
     <% desc.each_line do |line| %>
-      <% matched = line.match(/--(>|&gt;)\(([^ ]+) !:([0-9]+)\)/) %>
+      <% matched = line.match(/--(>|&gt;)\(([^ ]+).* !:([0-9]+)\)/) %>
       <% if matched != nil %>
         <%== $` %>
         <% task_url = ActionItem.find_by(uid:matched[3].to_i)&.task_url %>
@@ -35,7 +35,7 @@
         <% else %>
           <% message = "Created from [AI#{matched[3]}](#{request.url.split('?').first}?ai=#{matched[3]})" %>
           <% if assigner != nil %>
-            <% assigner_id =  assigner.id %>
+            <% assigner_id = assigner.id %>
           <% end %>
           <%= link_to matched[0].html_safe, new_task_path(assigner_id: assigner_id, project_id: @document.project_id, desc_header: message) %>
         <% end %>
@@ -44,7 +44,7 @@
         <%== line %>
       <% end %>
     <% end %>
-    </div>
+  </div>
   </p>
   <%= link_to '編集', edit_document_path(@document) %>
 </div>

@@ -7,6 +7,7 @@ class Document < ApplicationRecord
   has_many :tags, through: :document_tags
   accepts_nested_attributes_for :document_tags, allow_destroy: true
 
+  validates :content, presence: true
   validates :start_at, presence: true
   validates :end_at, presence: true
   validates :location, presence: true

@@ -8,7 +8,7 @@ DEFAULT_ATTACH_OPTION=it # {i|t|it|d}
 DEFAULT_PORT=3000 # host port which container binds
 DEFAULT_COMMAND="" # command which execute in container
                    # using default entrypoint of image, specify ""
-DEFAULT_IMAGE_NAME=rask
+DEFAULT_IMAGE_NAME=rask:$(git describe --tags --abbrev=0 || echo latest)
 DEFAULT_ENVIRONMENT=production
 # constant value
 SCRIPT_NAME=rask-docker.sh

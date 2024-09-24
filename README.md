@@ -152,3 +152,30 @@ rask の開発には docker-compose を使用する．
   ```
   $ systemctl start rask.service
   ```
+
+## 自動更新
+#### 概要
+* Rask に新たな Release が作成された際に自動更新できる．
+#### 手順
+1. `scripts/systemd_conf/rask-autoupdate.service` および `scripts/systemd_conf/rask-autoupdate.timer` を `/etc/systemd/system/` 以下にコピーする
+    ```bash
+    sudo cp scripts/systemd_conf/rask-autoupdate.* /etc/systemd/system/
+    ```
+2. 上記の2ファイルの内容を自身の環境に合わせて変更する
+    ```
+    # /etc/systemd/system/rask-autoupdate.service
+    - User=rask-user
+    + User=nomlab
+  
+    - ExecStart=/path/to/rask/script/update_rask.sh
+    + ExecStart=/home/nomlab/rask/scripts/update_rask.sh
+    ```
+    ```
+    # /etc/systemd/system/rask-autoupdate.timer
+    - OnCalendar=*-*-* 10:00:00
+    + OnCalendar=*-*-* 23:00:00
+    ```
+3. systemd の自動実行を有効にする
+    ```bash
+    sudo systemctl enable rask-autoupdate.timer
+    ```

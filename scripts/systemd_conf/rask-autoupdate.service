@@ -1,0 +1,14 @@
+[Unit]
+Description=Update Rask automatically
+
+[Service]
+Type=oneshot
+
+# Change this to the user that runs the Rask
+User=rask-user
+
+# Change this to the path to the Rask repository
+ExecStart=/path/to/rask/script/update_rask.sh
+
+[Install]
+WantedBy=multi-user.target

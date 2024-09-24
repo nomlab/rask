@@ -1,0 +1,17 @@
+name: create_release
+run-name: ${{ github.actor }} is creating release
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  Create_release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Release
+        uses: softprops/action-gh-release@v2
