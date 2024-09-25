@@ -1,0 +1,19 @@
+[package]
+name = "rask"
+version = "0.1.0"
+edition = "2021"
+authors = ["nomlab [https://github.com/nomlab]"]
+description = "Library for communicate with Rask"
+readme = "README.md"
+license = "MIT"
+license-file = "LICENSE"
+
+[[bin]]
+name = "rask-cli"
+
+[dependencies]
+anyhow = "1.0"
+clap = { version = "4", features = ["derive", "env"] }
+reqwest = { version = "0.12", features = ["blocking", "json", "rustls-tls"], default-features = false }
+serde = { version = "1.0", features = ["derive"] }
+thiserror = "1.0"
