@@ -3,7 +3,7 @@ require "test_helper"
 class ActionItemTest < ActiveSupport::TestCase
   test "Should create with correct data" do
     id = ActionItem.maximum(:id).to_i.next
-    assert ActionItem.new(id: 10000, task_url: '/github.com').save
+    assert ActionItem.new(id: id, task_url: '/github.com').save
   end
 
   test "Should create action_item without task_url" do
@@ -14,8 +14,7 @@ class ActionItemTest < ActiveSupport::TestCase
   test "Should be existed uid to created action_item" do
     id = ActionItem.maximum(:id).to_i.next
     ActionItem.new(id: id).save
-    item = ActionItem.find(id)
-    assert item.uid.present?
+    assert ActionItem.find(id).uid.present?
   end
 
   test "Should be added task_url to created action_item" do
@@ -26,7 +25,11 @@ class ActionItemTest < ActiveSupport::TestCase
     assert ActionItem.last.destroy
   end
 
-  test "Should not update uid" do
+  test "Should be updated uid from nil to anything" do
+    assert ActionItem.find(2).update(uid: 2)
+  end
+
+  test "Should not update uid from anything to anything" do
     assert_not ActionItem.last.update(uid: 1)
   end
 
