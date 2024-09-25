@@ -11,11 +11,21 @@ Or, build from source
 4. You can install Binary (`./target/release/rask-cli`) to wherever you want
 
 ## Usage
+* First, get Rask API token and set env variable
+  ```bash
+  $ export RASK_API_KEY="rask-thisissample-apitoken-012345679"
+  $ export RASK_URL="https://rask.example.com"
+  ```
+  * Or, you must set above value when you run command
+  ```bash
+  $ rask-cli --api-key "rask-thisissample-apitoken-012345679" --url "https://rask.example.com" task list
+  ```
+
 * Show all Tasks / Users / Projects
   ```bash
-  $ ./rask-cli task list
-  $ ./rask-cli user list
-  $ ./rask-cli projects list
+  $ rask-cli task list
+  $ rask-cli user list
+  $ rask-cli projects list
   ```
 * Create new Task
   ```bash
@@ -28,7 +38,7 @@ Or, build from source
   ```
   * Ex:
     ```bash
-    $ ./rask-cli task create --title "Complete my measurement" \
+    $ rask-cli task create --title "Complete my measurement" \
                              --assigner-name "nomlab" \
                              --state todo \
                              --project-name "My Research" \
