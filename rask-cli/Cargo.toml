@@ -5,7 +5,6 @@ edition = "2021"
 authors = ["nomlab [https://github.com/nomlab]"]
 description = "Library for communicate with Rask"
 readme = "README.md"
-license = "MIT"
 license-file = "LICENSE"
 
 [[bin]]
