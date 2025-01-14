@@ -2,6 +2,8 @@ require 'securerandom'
 
 class ApiTokensController < ApplicationController
   before_action :set_api_token, only: %i[ show edit update destroy ]
+  before_action :correct_user, only: %i[ show edit update destroy ]
+
 
   # GET /api_tokens or /api_tokens.json
   def index
@@ -68,5 +70,15 @@ class ApiTokensController < ApplicationController
     # Only allow a list of trusted parameters through.
     def api_token_params
       params.require(:api_token).permit(:secret, :description, :expired_at, :user_id)
+    end
+
+    # Check if the logged in user is the owner of the api_token
+    def correct_user
+      if ! current_user?(@api_token.user)
+        respond_to do |format|
+          format.html { redirect_to api_tokens_url }
+          format.json { render status: :not_found, json: { status: 404, message: 'Not Found' }}
+        end
+      end
     end
 end
