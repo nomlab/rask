@@ -31,7 +31,10 @@ class UsersController < ApplicationController
       flash[:success] = "ユーザ登録が完了しました"
       redirect_to tasks_path
     else
-      render 'new'
+      respond_to do |format|
+        format.html { redirect_to users_url }
+        format.json { render status: :bad_request, json: {status: 400, message: "Bad Request"} }
+      end
     end
   end
 

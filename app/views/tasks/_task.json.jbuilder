@@ -8,4 +8,7 @@ end
 json.set! :project do
   json.extract! task.project, :id, :name
 end
+json.set! :tags do
+  json.array! task.tags, :id, :name
+end
 json.url task_url(task, format: :json)
