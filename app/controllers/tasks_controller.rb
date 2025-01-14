@@ -65,14 +65,19 @@ class TasksController < ApplicationController
     parse_tag_names(params[:tag_names]) if params[:tag_names]
 
     if @task.save!
-      flash[:success] = "タスクを追加しました"
       matched = task_params[:description].match(/\[AI([0-9]+)\]/)
       if matched != nil
         ActionItem.find(matched[1]).update(task_url: tasks_path + "/" + @task.id.to_s)
       end
-      redirect_to tasks_path
+      respond_to do |format|
+        format.html { redirect_to @task, notice: "タスクを追加しました" }
+        format.json { render :show, status: :created, location: @task }
+      end
     else
-      redirect_back fallback_location: new_task_path
+      respond_to do |format|
+        format.html { render :new, status: :unprocessable_entity }
+        format.json { render json: @task.errors, status: :unprocessable_entity }
+      end
     end
   end
 
@@ -80,10 +85,15 @@ class TasksController < ApplicationController
   def update
     parse_tag_names(params[:tag_names]) if params[:tag_names]
     if @task.update(task_params)
-      flash[:success] = "タスクを更新しました"
-      redirect_to tasks_path
+      respond_to do |format|
+        format.html { redirect_to @task, notice: "タスクを更新しました．" }
+        format.json { render :show, status: :ok, location: @task }
+      end
     else
-      redirect_back fallback_location: edit_task_path(@task)
+      respond_to do |format|
+        format.html { render :edit, status: :unprocessable_entity }
+        format.json { render json: @task.errors, status: :unprocessable_entity }
+      end
     end
   end
 

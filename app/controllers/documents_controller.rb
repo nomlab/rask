@@ -71,10 +71,15 @@ class DocumentsController < ApplicationController
     parse_tag_names(params[:tag_names]) if params[:tag_names]
 
     if @document.save #XXX: save! => save
-      flash[:success] = "文書を追加しました"
-      redirect_to documents_path
+      respond_to do |format|
+        format.html { redirect_to @document, notice: "文書を追加しました" }
+        format.json { render :show, status: :created, location: @document }
+      end
     else
-      redirect_back fallback_location: new_document_path
+      respond_to do |format|
+        format.html { render :new, status: :unprocessable_entity }
+        format.json { render json: @document.errors, status: :unprocessable_entity }
+      end
     end
   end
 
@@ -85,7 +90,10 @@ class DocumentsController < ApplicationController
       flash[:success] = "文書を更新しました"
       redirect_to @document
     else
-      redirect_back fallback_location: edit_document_path(@document)
+      respond_to do |format|
+        format.html { render :edit, status: :unprocessable_entity }
+        format.json { render json: @document.errors, status: :unprocessable_entity }
+      end
     end
   end
 
