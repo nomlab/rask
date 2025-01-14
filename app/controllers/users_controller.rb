@@ -68,7 +68,11 @@ class UsersController < ApplicationController
     end
 
     def correct_user
-      @user = User.find(params[:id])
-      redirect_to(users_url) unless current_user?(@user)
+      if ! current_user?(@user)
+        respond_to do |format|
+          format.html { redirect_to users_url }
+          format.json { render status: 404, json: { status: 404, message: 'Not Found'  }}
+        end
+      end
     end
 end
