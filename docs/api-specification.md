@@ -29,7 +29,7 @@ TaskRequest {
               "description":   String,
               "project_id":    Integer,
               "task_state_id": Integer,
-              "tag_names":     List<String>
+              "tags":          List<String>
 }
 ```
 
@@ -52,6 +52,10 @@ TaskResponse {
     },
     "project": {
         "id":      Integer,
+        "name":    String,
+    },
+    "tags": {
+        "id":      String,
         "name":    String,
     },
     "url":         String,
@@ -95,7 +99,7 @@ DocumentRequest {
               "start_at":    Datetime
               "end_at":      Datetime
               "location":    String
-              "tag_names":   List<String>
+              "tags":        List<String>
 }
 
 ```
@@ -105,15 +109,24 @@ DocumentRequest {
 DocumentResponse {
     "id":          Integer,
     "content":     String,
-    "creator_id":  Integer,
+    "creator": {
+        "id":      Integer,
+        "name":    String,
+    },
     "description": String,
     "created_at":  Datetime,
     "updated_at":  Datetime,
-    "project_id":  Integer,
+    "project": {
+        "id":      Integer,
+        "name":    String,
+    },
     "start_at":    Datetime,
     "end_at":      Datetime,
     "location":    Integer,
-    "Tag":         List<String>,
+    "tags": {
+        "id":      String,
+        "name":    String,
+    },
     "url":         String,
 }
 ```
@@ -256,11 +269,15 @@ TagRequest {
 ### Response Schema
 ```
 TagResponse {
-    "id":         Integer,
-    "name":       String,
-    "created_at": Datetime,
-    "updated_at": Datetime,
-    "url":        String,
+    "id":          Integer,
+    "name":        String,
+    "docuements": {
+        "id":      Integer
+        "content": String
+    },
+    "created_at":  Datetime,
+    "updated_at":  Datetime,
+    "url":         String,
 }
 ```
 
@@ -332,7 +349,7 @@ APITokenResponse {
     * Note: You can show only your API Token
 3. Create new task
     * Method: POST
-    * PATH: "/tasks.json"
+    * PATH: "/api_tokens.json"
     * Request: APITokenRequest
     * Response: APITokenResponse (newly-created API Token)
     * Note: New task is owned by your account.
