@@ -1,15 +1,15 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
-  name: MyString
-  screen_name: MyString1
-  avatar_url: hoge
+  name: Test User1
+  screen_name: test-user1
+  avatar_url: http://example.com/user1
   provider: github
   uid: 1
 
 two:
-  name: MyString
-  screen_name: MyString2
-  avatar_url: hoge
+  name: Test User2
+  screen_name: test-user2
+  avatar_url: http://example.com/user2
   provider: github
   uid: 2
