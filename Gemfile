@@ -67,3 +67,4 @@ gem 'jay_flavored_markdown', git: 'https://github.com/nomlab/jay_flavored_markdo
 
 gem 'kaminari'
 gem 'ransack'
+gem "rswag-ui"

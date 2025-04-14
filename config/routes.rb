@@ -1,5 +1,7 @@
 Rails.application.routes.draw do
 
+  mount Rswag::Ui::Engine => '/api-docs'
+
   resources :tags
   resources :api_tokens
   resources :projects

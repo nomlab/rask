@@ -1,0 +1,1084 @@
+openapi: 3.0.3
+
+info:
+  title: RASK API
+  description: OpenAPI specification for RASK API
+  version: 2.0.0
+
+servers:
+- url: https://rask.nomlab.org
+  description: "本番環境"
+- url: http://localhost:3000
+  description: "開発サーバ"
+
+security:
+  - ApiKey: []
+
+tags:
+  - name: project
+    description: Project
+  - name: task
+    description: Task
+  - name: document
+    description: Document
+  - name: tag
+    description: Tag
+  - name: user
+    description: User
+  - name: api_token
+    description: API Token
+
+components:
+  schemas:
+    # Common Schema
+    idNameSet:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: Name
+
+    # Project Schema
+    projectRequest:
+      required:
+        - name
+      type: object
+      properties:
+        name:
+          type: string
+          example: Example Project
+    projectResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1
+        name:
+          type: string
+          example: Example Project
+        created_at:
+          type: string
+          example: 2025-01-01 1:02:03+9:00
+        updated_at:
+          type: string
+          example: 2025-01-01 1:02:03+9:00
+        user:
+          $ref: '#/components/schemas/idNameSet'
+        url:
+          type: string
+          example: https://example.com/path-to-resource/1
+
+    # Task Schema
+    taskRequest:
+      required:
+        - assigner_id
+        - content
+      type: object
+      properties:
+        assigner_id:
+          type: integer
+          format: int64
+          example: 1
+        content:
+          type: string
+          example: Example Task
+        due_at:
+          type: string
+          example: 2025/01/01 23:59
+        description:
+          type: string
+          example: This task is example
+        project_id:
+          type: string
+          example: 1
+        task_state_id:
+          type: integer
+          format: int64
+          example: 1
+        tags:
+          type: array
+          items:
+            type: string
+    taskResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1
+        content:
+          type: string
+          example: Example Task
+        description:
+          type: string
+          example: This task is example
+        due_at:
+          type: string
+          example: 2025/01/01 23:59
+        creator:
+          $ref: '#/components/schemas/idNameSet'
+        assigner:
+          $ref: '#/components/schemas/idNameSet'
+        project:
+          $ref: '#/components/schemas/idNameSet'
+        tags:
+          type: array
+          items:
+            type: string
+            example: tag1
+        created_at:
+          type: string
+          example: 2025-01-01 1:02:03+9:00
+        updated_at:
+          type: string
+          example: 2025-01-01 1:02:03+9:00
+        url:
+          type: string
+          example: https://example.com/path-to-resource/1
+
+    # Tag Schema
+    tagRequest:
+      required:
+        - name
+      type: object
+      properties:
+        name:
+          type: string
+          example: Example Tag
+    tagResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1
+        name:
+          type: string
+          example: Example Tag
+        tasks:
+          type: array
+          items:
+            $ref: '#/components/schemas/idNameSet'
+        documents:
+          type: array
+          items:
+            $ref: '#/components/schemas/idNameSet'
+        created_at:
+          type: string
+          example: 2025-01-01 1:02:03+9:00
+        updated_at:
+          type: string
+          example: 2025-01-01 1:02:03+9:00
+        url:
+          type: string
+          example: https://example.com/path-to-resource/1
+
+    # Document Schema
+    documentRequest:
+      required:
+        - content
+      type: object
+      properties:
+        content:
+          type: string
+          example: Example Document
+        description:
+          type: string
+          example: This document is example
+        project_id:
+          type: string
+          example: 1
+        start_at:
+          type: string
+          example: 2025/01/01 15:00
+        end_at:
+          type: string
+          example: 2025/01/01 17:00
+        location:
+          type: string
+          example: Meeting Room 1
+        tags:
+          type: array
+          items:
+            type: string
+    documentResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1
+        content:
+          type: string
+          example: Example Task
+        description:
+          type: string
+          example: This task is example
+        creator:
+          $ref: '#/components/schemas/idNameSet'
+        project:
+          $ref: '#/components/schemas/idNameSet'
+        start_at:
+          type: string
+          example: 2025/01/01 15:00
+        end_at:
+          type: string
+          example: 2025/01/01 17:00
+        location:
+          type: string
+          example: Meeting Room 1
+        tags:
+          type: array
+          items:
+            type: string
+            example: tag1
+        created_at:
+          type: string
+          example: 2025-01-01 1:02:03+9:00
+        updated_at:
+          type: string
+          example: 2025-01-01 1:02:03+9:00
+        url:
+          type: string
+          example: https://example.com/path-to-resource/1
+
+    # User Schema
+    userRequest:
+      required:
+        - name
+        - screen_name
+        - active
+      type: object
+      properties:
+        name:
+          type: string
+          example: Tarou Yamada
+        screen_name:
+          type: string
+          example: yamada
+        active:
+          type: boolean
+          example: true
+    userResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1
+        name:
+          type: string
+          example: Tarou Yamada
+        screen_name:
+          type: string
+          example: yamada
+        active:
+          type: boolean
+          example: true
+        created_at:
+          type: string
+          example: 2025-01-01 1:02:03+9:00
+        updated_at:
+          type: string
+          example: 2025-01-01 1:02:03+9:00
+        url:
+          type: string
+          example: https://example.com/path-to-resource/1
+
+    # API Token Schema
+    apiTokenRequest:
+      required:
+        - description
+      type: object
+      properties:
+        description:
+          type: string
+          example: Example API Token
+    apiTokenResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1
+        secret:
+          type: string
+          example: rask-1234567890ThisIsExampleAPIToken
+        description:
+          type: string
+          example: Example API Token
+        user:
+          $ref: '#/components/schemas/idNameSet'
+        created_at:
+          type: string
+          example: 2025-01-01 1:02:03+9:00
+        updated_at:
+          type: string
+          example: 2025-01-01 1:02:03+9:00
+        url:
+          type: string
+          example: https://example.com/path-to-resource/1
+
+    # Error Schema
+    Error:
+      type: object
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+      required:
+        - code
+        - message
+
+  requestBodies:
+    # Project Requests
+    project:
+      description: Data for the project to be added or updated
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/projectRequest'
+
+    # Task Requests
+    task:
+      description: Data for the task to be added or updated
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/taskRequest'
+
+    # Document Requests
+    document:
+      description: Data for the document to be added or updated
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/documentRequest'
+
+    # Tag Requests
+    tag:
+      description: Data for the tag to be added or updated
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/tagRequest'
+
+    # User Requests
+    user:
+      description: Data for the user to be updated
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/userRequest'
+
+    # APIToken Requests
+    apiToken:
+      description: Data for the API Token to be added or updated
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/apiTokenRequest'
+
+  responses:
+    # Error Responses
+    BadRequest:
+      description: Invalid Request Body
+    Unauthorized:
+      description: API key is missing or invalid
+    Forbidden:
+      description: Request from the user associated with API key is forbidden
+    NotFound:
+      description: API or specified resource is not found
+    PreconditionFailed:
+      description: Cannot delete the resource that is associated with any other resources
+    UnexpectedError:
+      description: Unexpected Error
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+
+    # Project Responses
+    project:
+      description: Project data
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/projectResponse'
+    projectArray:
+      description: List of projects
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/projectResponse'
+
+    # Task Responses
+    task:
+      description: Task data
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/taskResponse'
+    taskArray:
+      description: List of Tasks
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/taskResponse'
+
+    # Document Responses
+    document:
+      description: Document data
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/documentResponse'
+    documentArray:
+      description: List of documents
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/documentResponse'
+
+    # Tag Responses
+    tag:
+      description: Tag data
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/tagResponse'
+    tagArray:
+      description: List of tags
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/tagResponse'
+
+    # User Responses
+    user:
+      description: User data
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/userResponse'
+    userArray:
+      description: List of users
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/userResponse'
+
+    # API Token Responses
+    apiToken:
+      description: API Token data
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/apiTokenResponse'
+    apiTokenArray:
+      description: List of API Tokens
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/apiTokenResponse'
+
+  securitySchemes:
+    ApiKey:
+      type: apiKey
+      in: query
+      name: api_key
+
+paths:
+  ###################
+  ##  Project API  ##
+  ###################
+  /projects:
+    get:
+      tags:
+        - project
+      summary: Get all of projects
+      description: This API returns all of projects
+      operationId: projectIndex
+      responses:
+        '200':
+          $ref: '#/components/responses/projectArray'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        default:
+          $ref: "#/components/responses/UnexpectedError"
+    post:
+      tags:
+        - project
+      summary: Add new single project
+      description: This API can add a new project and returns the newly-created project
+      operationId: projectCreate
+      requestBody:
+        $ref: '#/components/requestBodies/project'
+      responses:
+        '200':
+          $ref: '#/components/responses/projectArray'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        default:
+          $ref: "#/components/responses/UnexpectedError"
+  /projects/{projectId}:
+    parameters:
+      - name: projectId
+        in: path
+        description: ID of project
+        required: true
+        schema:
+          type: integer
+          format: int64
+    get:
+      tags:
+        - project
+      summary: Get the specified project
+      description: This API returns the specified project
+      operationId: projectShow
+      responses:
+        '200':
+          $ref: '#/components/responses/project'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        default:
+          $ref: "#/components/responses/UnexpectedError"
+    put:
+      tags:
+        - project
+      summary: Update the specified project
+      description: This API can update the specified project and returns the updated project
+      operationId: projectUpdate
+      requestBody:
+        $ref: '#/components/requestBodies/project'
+      responses:
+        '200':
+          $ref: '#/components/responses/project'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        default:
+          $ref: "#/components/responses/UnexpectedError"
+    delete:
+      tags:
+        - project
+      summary: Delete the specified project
+      description: This API can delete the specified project and returns the deleted project
+      operationId: projectDelete
+      responses:
+        '200':
+          $ref: '#/components/responses/project'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '413':
+          $ref: '#/components/responses/PreconditionFailed'
+        default:
+          $ref: "#/components/responses/UnexpectedError"
+
+  ##################
+  ##   Task API   ##
+  ##################
+  /tasks:
+    get:
+      tags:
+        - task
+      summary: Get all of tasks
+      description: This API returns all of tasks
+      operationId: taskIndex
+      responses:
+        '200':
+          $ref: '#/components/responses/taskArray'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        default:
+          $ref: "#/components/responses/UnexpectedError"
+    post:
+      tags:
+        - task
+      summary: Add new single task
+      description: This API can add a new task and returns the newly-created task
+      operationId: taskCreate
+      requestBody:
+        $ref: '#/components/requestBodies/task'
+      responses:
+        '200':
+          $ref: '#/components/responses/taskArray'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        default:
+          $ref: "#/components/responses/UnexpectedError"
+  /tasks/{taskId}:
+    parameters:
+      - name: taskId
+        in: path
+        description: ID of task
+        required: true
+        schema:
+          type: integer
+          format: int64
+    get:
+      tags:
+        - task
+      summary: Get the specified task
+      description: This API returns the specified task
+      operationId: taskShow
+      responses:
+        '200':
+          $ref: '#/components/responses/task'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        default:
+          $ref: "#/components/responses/UnexpectedError"
+    put:
+      tags:
+        - task
+      summary: Update the specified task
+      description: This API can update the specified task and returns the updated task
+      operationId: taskUpdate
+      requestBody:
+        $ref: '#/components/requestBodies/task'
+      responses:
+        '200':
+          $ref: '#/components/responses/task'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        default:
+          $ref: "#/components/responses/UnexpectedError"
+    delete:
+      tags:
+        - task
+      summary: Delete the specified task
+      description: |-
+        This API can delete the specified task and returns the deleted task
+        This API can delete only the project that is not associated with any tasks and any documents, otherwise returns 413 (PreconditionFailed)
+      operationId: taskDelete
+      responses:
+        '200':
+          $ref: '#/components/responses/task'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        default:
+          $ref: "#/components/responses/UnexpectedError"
+
+  ####################
+  ##  Document API  ##
+  ####################
+  /documents:
+    get:
+      tags:
+        - document
+      summary: Get all of documents
+      description: This API returns all of documents
+      operationId: documentIndex
+      responses:
+        '200':
+          $ref: '#/components/responses/documentArray'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        default:
+          $ref: "#/components/responses/UnexpectedError"
+    post:
+      tags:
+        - document
+      summary: Add new single document
+      description: This API can add a new document and returns the newly-created document
+      operationId: documentCreate
+      requestBody:
+        $ref: '#/components/requestBodies/document'
+      responses:
+        '200':
+          $ref: '#/components/responses/documentArray'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        default:
+          $ref: "#/components/responses/UnexpectedError"
+  /documents/{documentId}:
+    parameters:
+      - name: documentId
+        in: path
+        description: ID of document
+        required: true
+        schema:
+          type: integer
+          format: int64
+    get:
+      tags:
+        - document
+      summary: Get the specified document
+      description: This API can returns the specified document
+      operationId: documentShow
+      responses:
+        '200':
+          $ref: '#/components/responses/document'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        default:
+          $ref: "#/components/responses/UnexpectedError"
+    put:
+      tags:
+        - document
+      summary: Update the specified document
+      description: This API can update the specified document and returns updated document
+      operationId: documentUpdate
+      requestBody:
+        $ref: '#/components/requestBodies/document'
+      responses:
+        '200':
+          $ref: '#/components/responses/document'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        default:
+          $ref: "#/components/responses/UnexpectedError"
+    delete:
+      tags:
+        - document
+      summary: Delete the specified document
+      description: This API can delete the specified document and returns deleted document
+      operationId: documentDelete
+      responses:
+        '200':
+          $ref: '#/components/responses/document'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        default:
+          $ref: "#/components/responses/UnexpectedError"
+
+  ####################
+  ##  Tag API  ##
+  ####################
+  /tags:
+    get:
+      tags:
+        - tag
+      summary: Get all of tags
+      description: This API returns all of tags
+      operationId: tagIndex
+      responses:
+        '200':
+          $ref: '#/components/responses/tagArray'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        default:
+          $ref: "#/components/responses/UnexpectedError"
+    post:
+      tags:
+        - tag
+      summary: Add new single tag
+      description: This API can add a new tag and returns the newly-created tag
+      operationId: tagCreate
+      requestBody:
+        $ref: '#/components/requestBodies/tag'
+      responses:
+        '200':
+          $ref: '#/components/responses/tagArray'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        default:
+          $ref: "#/components/responses/UnexpectedError"
+  /tags/{tagId}:
+    parameters:
+      - name: tagId
+        in: path
+        description: ID of tag
+        required: true
+        schema:
+          type: integer
+          format: int64
+    get:
+      tags:
+        - tag
+      summary: Get the specified tag
+      description: This API returns the specified tag
+      operationId: tagShow
+      responses:
+        '200':
+          $ref: '#/components/responses/tag'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        default:
+          $ref: "#/components/responses/UnexpectedError"
+    put:
+      tags:
+        - tag
+      summary: Update the specified tag
+      description: This API can update the specified tag and returns the updated tag
+      operationId: tagUpdate
+      requestBody:
+        $ref: '#/components/requestBodies/tag'
+      responses:
+        '200':
+          $ref: '#/components/responses/tag'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        default:
+          $ref: "#/components/responses/UnexpectedError"
+    delete:
+      tags:
+        - tag
+      summary: Delete the specified tag
+      description: |-
+        This API can delete the specified  tag and returns the deleted tag
+        This API can delete only the tag that is not associated with any tasks and any documents, otherwise returns 413 (PreconditionFailed)
+      operationId: tagDelete
+      responses:
+        '200':
+          $ref: '#/components/responses/tag'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '413':
+          $ref: '#/components/responses/PreconditionFailed'
+        default:
+          $ref: "#/components/responses/UnexpectedError"
+
+  ####################
+  ##  User API  ##
+  ####################
+  /users:
+    get:
+      tags:
+        - user
+      summary: Get all of users
+      description: This API returns all of users
+      operationId: userIndex
+      responses:
+        '200':
+          $ref: '#/components/responses/userArray'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        default:
+          $ref: "#/components/responses/UnexpectedError"
+  /users/{userId}:
+    parameters:
+      - name: userId
+        in: path
+        description: ID of user
+        required: true
+        schema:
+          type: integer
+          format: int64
+    get:
+      tags:
+        - user
+      summary: Get the specified user
+      description: This API returns the specified user
+      operationId: userShow
+      responses:
+        '200':
+          $ref: '#/components/responses/user'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        default:
+          $ref: "#/components/responses/UnexpectedError"
+    put:
+      tags:
+        - user
+      summary: Update the specified user
+      description: |-
+        This API can update the specified user and returns updated user
+        This API can update only your user account, otherwise returns 403 (Forbidden)
+      operationId: userUpdate
+      requestBody:
+        $ref: '#/components/requestBodies/user'
+      responses:
+        '200':
+          $ref: '#/components/responses/user'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        default:
+          $ref: "#/components/responses/UnexpectedError"
+    delete:
+      tags:
+        - user
+      summary: Delete the specified user
+      description: |-
+        This API can delete the specified user and returns deleted user
+        This API can delete only your accont, otherwise returns 403 (Forbidden)
+      operationId: userDelete
+      responses:
+        '200':
+          $ref: '#/components/responses/user'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        default:
+          $ref: "#/components/responses/UnexpectedError"
+
+  #####################
+  ##  API Token API  ##
+  #####################
+  /api_tokens:
+    get:
+      tags:
+        - api_token
+      summary: Get all of your API Tokens
+      description: This API returns your API Tokens
+      operationId: apiTokenIndex
+      responses:
+        '200':
+          $ref: '#/components/responses/apiTokenArray'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        default:
+          $ref: "#/components/responses/UnexpectedError"
+    post:
+      tags:
+        - api_token
+      summary: Add new single API Token
+      description: |-
+        This API can add a new API Token and returns the newly-created API Token
+        Newly-created API Token is automatically owned by your account
+      operationId: apiTokenCreate
+      requestBody:
+        $ref: '#/components/requestBodies/apiToken'
+      responses:
+        '200':
+          $ref: '#/components/responses/apiTokenArray'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        default:
+          $ref: "#/components/responses/UnexpectedError"
+  /api_tokens/{apiTokenId}:
+    parameters:
+      - name: apiTokenId
+        in: path
+        description: ID of API Token
+        required: true
+        schema:
+          type: integer
+          format: int64
+    get:
+      tags:
+        - api_token
+      summary: Get the specified API Token
+      description: |-
+        This API returns the specified API Token
+        This API can get only your API Key, otherwise returns 403 (Forbidden)
+      operationId: apiTokenShow
+      responses:
+        '200':
+          $ref: '#/components/responses/apiToken'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        default:
+          $ref: "#/components/responses/UnexpectedError"
+    put:
+      tags:
+        - api_token
+      summary: Update the specified API Token
+      description: |-
+        This API can update the specified API Token, and returns updated API Token
+        This API can update your API Key (including the API Key using this request), otherwise returns 403 (Forbidden)
+      operationId: apiTokenUpdate
+      requestBody:
+        $ref: '#/components/requestBodies/apiToken'
+      responses:
+        '200':
+          $ref: '#/components/responses/apiToken'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        default:
+          $ref: "#/components/responses/UnexpectedError"
+    delete:
+      tags:
+        - api_token
+      summary: Delete the specified API Token
+      description: |-
+        This API can delete the specified API Token, and returns deleted API Token
+        This API can delete only your API Key (including the API Key using this request), otherwise returns 403 (Forbidden)
+      operationId: apiTokenDelete
+      responses:
+        '200':
+          $ref: '#/components/responses/apiToken'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        default:
+          $ref: "#/components/responses/UnexpectedError"
