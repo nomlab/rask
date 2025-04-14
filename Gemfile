@@ -65,4 +65,4 @@ gem 'kaminari'
 gem 'ransack'
 gem 'bootstrap'
 gem 'dartsass-sprockets'
-
+gem "rswag-ui"
