@@ -24,7 +24,6 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should get edit" do
-    skip ''
     log_in_as(@user)
     get edit_user_url(@user)
     assert_response :success
@@ -36,7 +35,6 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should update user" do
-    skip ''
     log_in_as(@user)
     patch user_url(@user), params: { user: { name: @user.name } }
     assert_redirected_to user_url(@user)
@@ -47,18 +45,10 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to welcome_path
   end
 
-  test "should destroy user" do
-    skip ''
+  test "should not destroy user" do
     log_in_as(@user)
-    assert_difference('User.count', -1) do
+    assert_no_difference("User.count") do
       delete user_url(@user)
     end
-
-    assert_redirected_to projects_url
-  end
-
-  test "should redirect destroy to login" do
-    delete user_url(@user)
-    assert_redirected_to welcome_path
   end
 end

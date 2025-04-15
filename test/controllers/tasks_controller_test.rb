@@ -56,7 +56,6 @@ class TasksControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should update task" do
-    skip ''
     log_in_as(@user)
     patch task_url(@task), params: { task: { content: @task.content, creator_id: @task.creator_id, task_state_id: @task.task_state_id } }
     assert_redirected_to tasks_url

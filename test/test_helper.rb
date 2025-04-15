@@ -19,7 +19,7 @@ class ActionDispatch::IntegrationTest
     OmniAuth.config.mock_auth[:github] =
       OmniAuth::AuthHash.new({
                                :provider => 'github',
-                               :uid => user.id,
+                               :uid => user.uid,
                                :credentials => {
                                  :token => 'mock_token',
                                  :active_member => 'mock_active_member'
