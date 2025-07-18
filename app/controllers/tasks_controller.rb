@@ -40,7 +40,7 @@ class TasksController < ApplicationController
   # GET /tasks/new
   def new
     @task = Task.new
-    @task.assigner_id = params[:assigner_id]
+    @task.assigner_id = params[:assigner_id] || current_user.id
     @task.content = params[:selected_str]
     @task.description = params[:desc_header]
     @task.due_at = Date.current + 14
