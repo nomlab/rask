@@ -21,15 +21,64 @@
   </div>
 
   <div class="mb-4">
-    <%= form.label :tags, "タグ", class: "form-label fw-bold", for: "tag-name" %>
-    <div id="current-tags" class="mb-2"></div>
-    <% tag_names = @task.tags.map(&:name) %>
-    <input id="tag-names" name="tag_names" type="hidden" value="<%= tag_names.join(' ') %>" />
-    <div class="input-group">
-      <input autocomplete="off" id="tag-name" type="text" class="form-control" placeholder="タグを入力してください" />
-      <button id="tag-add-button" type="button" class="btn btn-primary">Add tag</button>
+    <%= form.label :tags, "タグ", class: "form-label fw-bold mb-2", for: "tag-name" %>
+    <div id="current_tags" class="mb-2"></div>
+    <div class="input-group mb-2">
+      <input id="tag-name" list="tags" class="form-control">
+      <button type="button" id="add-tag-btn" class="btn btn-outline-secondary">追加</button>
     </div>
+    <datalist id="tags">
+      <% @tags.each do |t| %>
+        <option value="<%= t.name %>">
+      <% end %>
+    </datalist>
   </div>
+
+  <script>
+    document.addEventListener('turbo:load', function() {
+      const tagInput = document.getElementById('tag-name');
+      const addTagBtn = document.getElementById('add-tag-btn');
+      const addedTagsDiv = document.getElementById('current_tags');
+      const form = document.getElementById('editor');
+      let tags = <%= raw(task.tags.map(&:name).to_json) %>;
+      renderTags();
+
+      function renderTags() {
+        addedTagsDiv.innerHTML = '';
+        tags.forEach((tag, idx) => {
+          const span = document.createElement('span');
+          span.className = 'badge bg-secondary me-1';
+          span.textContent = tag;
+          const removeBtn = document.createElement('button');
+          removeBtn.type = 'button';
+          removeBtn.className = 'btn-close btn-close-white ms-1';
+          removeBtn.style.fontSize = '0.7em';
+          removeBtn.onclick = () => {
+            tags.splice(idx, 1);
+            renderTags();
+          };
+          span.appendChild(removeBtn);
+          addedTagsDiv.appendChild(span);
+        });
+        document.querySelectorAll('.tag-hidden-input').forEach(e => e.remove());
+        const input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = 'tag_names';
+        input.value = tags.join(' ');
+        input.className = 'tag-hidden-input';
+        form.appendChild(input);
+      }
+
+      addTagBtn.onclick = () => {
+        const val = tagInput.value.trim();
+        if (val && !tags.includes(val)) {
+          tags.push(val);
+          tagInput.value = '';
+          renderTags();
+        }
+      };
+    });
+  </script>
 
   <% content_for :js do %>
     <%= javascript_import_module_tag "tag_completion" %>
