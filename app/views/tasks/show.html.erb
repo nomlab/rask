@@ -30,4 +30,10 @@
   <%= link_to @task.project.name, @task.project, class: "text-dark text-decoration-none" if @task.project %>
 </div>
 
-<%= link_to '編集', edit_task_path(@task), class: "btn btn-outline-dark" %>
+
+<% if logged_in? %>
+  <div class="d-flex gap-2">
+    <%= link_to '編集', edit_task_path(@task), class: "btn btn-outline-dark" %>
+    <%= button_to '削除', @task, method: :delete, data: { turbo_confirm: 'このタスクを削除しますか？' }, class: "btn btn-outline-dark" %>
+  </div>
+<% end %>

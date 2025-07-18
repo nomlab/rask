@@ -6,39 +6,43 @@
       <% else %>
         <i class="far fa-dot-circle" style="color: <%= task.state.color %>;"></i>
       <% end %>
-      <%= link_to task.content, task, class: "text-black" %>
+      <%= link_to task.content.truncate(20), task, class: "text-black text-small" %>
     </p>
     <p class="mb-1">
       <% if task.project %>
         <%= link_to task.project.name, task.project, class: "text-black" %>
       <% end %>
       <%= link_to task.assigner.name, task.assigner, class: "text-black" %>
+      ,
       <span class="text-black"><%= task.show_days_ago.round.to_s + "日前" %></span>
       <% task.tags.each do |tag| %>
-        <%= link_to tag_label(tag), tag, class: "btn btn-primary btn-outline-primary btn-lg" %>
+        <%= link_to tag.name, tag, class: "text-orange fw-bold badge" %>
       <% end %>
     </p>
   </div>
 
   <div class="text-center">
-    <% if task.overdue? %>
-      <p class="overdue_mark">期限切れです！</p>
-    <% else %>
-      <p class="ongoing_mark"><%= days_to_deadline_as_string task %></p>
+    <%unless task.completed? %>
+      <% if task.overdue? %>
+        <p class="overdue_mark">期限切れです！</p>
+      <% else %>
+        <p class="ongoing_mark"><%= days_to_deadline_as_string task %></p>
+      <% end %>
     <% end %>
   </div>
-
-  <% if logged_in? %>
-    <div class="d-flex gap-2">
-      <%= link_to '詳細', task, class: "btn btn-sm" %>
-      <%= link_to '編集', edit_task_path(task), class: "btn btn-sm" %>
-      <%= button_to '削除', task, method: :delete, data: { turbo_confirm: 'このタスクを削除しますか？' }, class: "btn btn-sm" %>
-    </div>
-  <% end %>
 </div>
 
 <style>
-  .text-black {
+  .text-black, .badge {
     text-decoration: none;
+  }
+  .text-orange, .badge {
+    color: #f59e0b;
+    font-size: 0.8rem;
+    text-decoration: none;
+  }
+  .text-small {
+    font-size: 1.1rem;
+    font-weight: normal;
   }
 </style>

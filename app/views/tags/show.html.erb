@@ -10,38 +10,14 @@
     <p class="h5 fw-bold mb-2">タスク一覧</p>
     <div class="flex-grow-1"></div>
   </div>
-  <% @tag.tasks.each do |task| %>
-    <div class="p-3 my-3 border rounded d-flex justify-content-between">
-      <div>
-        <p class="h5"><%= task.content %></p>
-        <p>担当者: <%= link_to task.assigner.name, task.assigner %></p>
-      </div>
-      <div class="flex-grow-1"></div>
-      <% if logged_in? %>
-        <%= link_to '詳細', task, class: "btn btn-sm" %>
-        <%= link_to '編集', edit_task_path(task), class: "btn btn-sm" %>
-        <%= button_to '削除', task, method: :delete, data: { turbo_confirm: 'このタスクを削除しますか？' }, class: "btn btn-sm" %>
-      <% end %>
-    </div>
-  <% end %>
+  <%= render @tag.tasks %>
 
   <div class="d-flex">
-    <p class="h5 fw-bold mb-2">文書一覧</p>
+    <p class="h5 fw-bol,dfrom_tag_partial: true  mb-2">文書一覧</p>
     <div class="flex-grow-1"></div>
   </div>
-  <% @tag.documents.each do |document| %>
-    <div class="p-3 my-3 border rounded d-flex justify-content-between">
-      <div>
-        <p class="h5"><%= document.content %></p>
-      </div>
-      <div class="flex-grow-1"></div>
-      <% if logged_in? %>
-        <%= link_to '詳細', document, class: "btn btn-sm" %>
-        <%= link_to '編集', edit_document_path(document), class: "btn btn-sm" %>
-        <%= button_to '削除', document, method: :delete, data: { turbo_confirm: 'この文書を削除しますか？' }, class: "btn btn-sm" %>
-      <% end %>
-    </div>
-  <% end %>
+
+  <%= render @tag.documents, from_tag_partial: true %>
 
   <%= link_to '編集', edit_tag_path(@tag), class: "btn btn-sm" %>
 </div>
