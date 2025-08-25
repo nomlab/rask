@@ -30,6 +30,12 @@ class TaskTest < ActiveSupport::TestCase
     assert_not Task.new(task).save
   end
 
+  test "should not create task without task_state_id" do
+    task = @task_template.clone
+    task[:task_state_id] = nil
+    assert_not Task.new(task).save
+  end
+
   test "should delete task" do
     task = @task_template.clone
     task = Task.create(task)
