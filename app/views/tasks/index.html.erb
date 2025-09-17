@@ -29,6 +29,13 @@
   <%= link_to '新規作成', new_task_path, class: "btn btn-danger ms-3" %>
 </div>
 
+<%= form_with url: request.path, method: :get, local: true, html: { class: "d-flex" } do %>
+      <%= check_box_tag :only_todo, "1", params[:only_todo] == "1", onchange: "this.form.submit()" %>
+    <div class="mx-1">
+      todoのみ
+    </div>
+<% end %>
+
 <%= render @tasks %>
 
 <div class="row">

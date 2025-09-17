@@ -31,6 +31,10 @@ class TasksController < ApplicationController
       @q.sorts = sort_check(params[:q][:s])
     end
     @tasks = @q.result.page(params[:page]).per(50).includes(:user, :state)
+
+    return unless params[:only_todo] == '1'
+
+    @tasks = @tasks.where(task_state_id: TaskState.find_by(name: 'todo').id)
   end
 
   # GET /tasks/1 or /tasks/1.json
