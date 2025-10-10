@@ -83,7 +83,7 @@ class DocumentsController < ApplicationController
     parse_tag_names(params[:tag_names]) if params[:tag_names]
     if @document.update(document_params)
       flash[:success] = "文書を更新しました"
-      redirect_to documents_path
+      redirect_to @document
     else
       redirect_back fallback_location: edit_document_path(@document)
     end
