@@ -30,11 +30,12 @@ class TasksController < ApplicationController
       @q = Task.joins(:state).ransack({combinator: 'and', groupings: search_check(params[:q][:content_or_assigner_screen_name_or_description_or_project_name_cont])})
       @q.sorts = sort_check(params[:q][:s])
     end
-    @tasks = @q.result.page(params[:page]).per(50).includes(:user, :state)
 
-    return unless params[:only_todo] == '1'
-
-    @tasks = @tasks.where(task_state_id: TaskState.find_by(name: 'todo').id)
+    if params[:only_todo] == '1'
+      @tasks = Task.active.page(params[:page]).per(50).includes(:user, :state)
+    else 
+      @tasks = @q.result.page(params[:page]).per(50).includes(:user, :state)
+    end
   end
 
   # GET /tasks/1 or /tasks/1.json
