@@ -105,7 +105,7 @@
     <input id="preview" type="radio" name="tab_item">
     <label class="tab_item" for="preview">Preview</label>
     <div class="tab_content" id="write_content">
-      <%= form.text_area :description, class: "border-2 w-full", rows: 10, id: "write-area", placeholder: "内容を入力してください" %>
+      <%= form.text_area :description, class: "border-2 w-full", rows: 10, id: "write-area", placeholder: "タスクの説明を入力してください" %>
     </div>
     <div class="tab_content" id="preview_content">
       <div style="height: 300px" class="overflow-y-scroll">
@@ -118,6 +118,20 @@
   <div class="d-grid">
     <%= form.submit "保存", class: "btn btn-danger" %>
   </div>
+
+  <script>
+    document.getElementById('preview').onchange=function(){
+    const text = document.getElementById("write-area").value
+    const preview = document.getElementById("preview-area")
+    const obj = {text: text};
+    const method = "POST";
+    const body = JSON.stringify(obj);
+    const headers = {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+    };
+    fetch("/documents/api_markdown", {method, headers, body}).then((res)=> res.json()).then((obj) => {preview.innerHTML=obj.text}).catch(console.error);}
+  </script>
 
   <%= javascript_include_tag 'prevent_transition_in_editing' %>
 <% end %>
