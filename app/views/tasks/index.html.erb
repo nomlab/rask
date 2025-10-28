@@ -22,6 +22,7 @@
         class: "form-control me-2", 
         placeholder: '検索ワードを入力して下さい', 
         style: "flex: 1;" %>
+      <%= hidden_field_tag :only_todo, params[:only_todo] if params[:only_todo].present? %>
       <%= f.submit "検索", class: "btn btn-primary" %>
     <% end %>
   </div>
@@ -30,10 +31,16 @@
 </div>
 
 <%= form_with url: request.path, method: :get, local: true, html: { class: "d-flex" } do %>
-      <%= check_box_tag :only_todo, "1", params[:only_todo] == "1", onchange: "this.form.submit()" %>
-    <div class="mx-1">
-      todoのみ
-    </div>
+  <%= check_box_tag :only_todo, "1", params[:only_todo] == "1", onchange: "this.form.submit()" %>
+  <div class="mx-1">
+    todoのみ
+  </div>
+
+  <% if params[:q].present? %>
+    <% params[:q].each do |key, value| %>
+      <%= hidden_field_tag "q[#{key}]", value %>
+    <% end %>
+  <% end %>
 <% end %>
 
 <%= render @tasks %>
