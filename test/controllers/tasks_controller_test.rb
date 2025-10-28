@@ -36,7 +36,7 @@ class TasksControllerTest < ActionDispatch::IntegrationTest
       post tasks_url, params: { task: { content: @task.content, creator_id: @task.creator_id, assigner_id: @task.assigner_id , due_at: @task.due_at, description: @task.description, project_id: @task.project_id, task_state_id: @task.task_state_id} }
     end
 
-    assert_redirected_to tasks_url
+    assert_redirected_to task_url(Task.last)
   end
 
   test "should redirect create to login" do
@@ -58,7 +58,7 @@ class TasksControllerTest < ActionDispatch::IntegrationTest
   test "should update task" do
     log_in_as(@user)
     patch task_url(@task), params: { task: { content: @task.content, creator_id: @task.creator_id, task_state_id: @task.task_state_id } }
-    assert_redirected_to tasks_url
+    assert_redirected_to task_url(@task)
   end
 
   test "should redirect update to login" do
