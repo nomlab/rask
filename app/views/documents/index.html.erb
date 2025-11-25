@@ -1,3 +1,7 @@
+<% content_for :tag_list do %>
+  <%= render partial: "layouts/tag_list", locals: { base_link: documents_path } %>
+<% end %>
+
 <div class="d-flex align-items-center">
   <%= render 'layouts/h1', title: "文書一覧" %>
   <div class="flex-grow-1"></div>
@@ -18,9 +22,9 @@
 
   <div class="border p-3 my-3 rounded d-flex align-items-center gap-3">
     <%= search_form_for @q, class: "d-flex align-items-center w-100" do |f| %>
-      <%= f.text_field :content_or_creator_screen_name_or_description_or_project_name_or_location_cont, 
-        class: "form-control me-2", 
-        placeholder: '検索ワードを入力して下さい', 
+      <%= f.text_field :text_cont,
+        class: "form-control me-2",
+        placeholder: '検索ワードを入力して下さい',
         style: "flex: 1;" %>
       <%= f.submit "検索", class: "btn btn-primary" %>
     <% end %>

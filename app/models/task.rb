@@ -15,9 +15,11 @@ class Task < ApplicationRecord
 
   validates :content, presence: true
 
+  ransack_alias :text, :content_or_assigner_screen_name_or_description_or_project_name
+
   def self.ransackable_attributes(auth_object = nil)
-    [ "assigner_id", "content", "created_at", "creator_id", "description", "due_at", "id", "project_id", "tag_id", "task_state_id", "updated_at" ]
-    end
+    [ "assigner_id", "content", "created_at", "creator_id", "description", "due_at", "id", "project_id", "tag_id", "task_state_id", "updated_at", "text" ]
+  end
 
   def self.ransackable_associations(auth_object = nil)
     [ "assigner", "project", "state", "tags", "task_tags", "user" ]
