@@ -30,12 +30,15 @@ class TasksController < ApplicationController
       @q = Task.joins(:state).ransack({combinator: 'and', groupings: search_check(params[:q][:content_or_assigner_screen_name_or_description_or_project_name_cont])})
       @q.sorts = sort_check(params[:q][:s])
     end
+
+    @show_all = params[:all] == 'true'
     tasks_query = @q.result
 
     if params[:only_todo] == '1'
       tasks_query = tasks_query.merge(Task.active)
     end
     
+    tasks_query = tasks_query.joins(:user).where(users: {screen_name: current_user&.screen_name}) unless @show_all
     @tasks = tasks_query.page(params[:page]).per(50).includes(:user, :state)
   end
 

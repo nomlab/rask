@@ -43,11 +43,24 @@
   <% end %>
 <% end %>
 
-<%= render @tasks %>
+<% current_q_params = request.query_parameters.except(:controller, :action, :page) %>
+<ul class="text-center nav nav-tabs" role="tablist">
+  <li class="nav-item w-50 bg-light">
+    <%= link_to "#{current_user&.screen_name}のタスク", tasks_path(current_q_params.merge(all: 'false')), class: "nav-link #{'active' if !@show_all} link-text" %>
+  </li>
+  <li class="nav-item w-50 bg-light">
+    <%= link_to 'すべてのタスク', tasks_path(current_q_params.merge(all: 'true')), class: "nav-link #{'active' if @show_all} link-text" %>
+  </li>
+</ul>
 
-<div class="row">
-  <div class="col-12 text-center">
-    <%= raw(paginate @tasks) %>
+<div class="tab-content">
+  <div class="tab-pane show active" id="tasks" role="tabpanel">
+    <%= render @tasks %>
+    <div class="row">
+      <div class="col-md-12 col-sm-12 text-center hidden-xs">
+        <%= raw(paginate @tasks, params: current_q_params) %>
+      </div>
+    </div>
   </div>
 </div>
 
