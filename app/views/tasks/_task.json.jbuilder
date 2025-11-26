@@ -6,7 +6,9 @@ json.set! :assigner do
   json.extract! task.assigner, :id, :name
 end
 json.set! :project do
-  json.extract! task.project, :id, :name
+  if task.project
+    json.extract! task.project, :id, :name
+  end
 end
 json.set! :tags do
   json.array! task.tags, :id, :name

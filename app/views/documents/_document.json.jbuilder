@@ -3,7 +3,9 @@ json.set! :creator do
   json.extract! document.user, :id, :name
 end
 json.set! :project do
-  json.extract! document.project, :id, :name
+  if document.project
+    json.extract! document.project, :id, :name
+  end
 end
 json.set! :tags do
   json.array! document.tags, :id, :name
