@@ -4,7 +4,7 @@ class ProjectsController < ApplicationController
 
   # GET /projects or /projects.json
   def index
-    @projects = Project.all.includes(:user)
+    @projects = Project.all.includes(:user, tasks: [:state, :tags, :assigner, :project])
   end
 
   # GET /projects/1 or /projects/1.json

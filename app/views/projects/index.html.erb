@@ -9,14 +9,14 @@
     <div class="d-flex justify-content-between">
       <div>
         <p class="h5"><%= project.name %></p>
-        <p>達成率 : <%= project.tasks.count { |task| task.completed? } %> / <%= project.tasks.count %></p>
+        <p>達成率 : <%= project.tasks.size { |task| task.completed? } %> / <%= project.tasks.size %></p>
       </div>
       <div class="text-end">
         <% if logged_in? %>
           <div class="d-flex gap-2">
             <%= link_to '詳細', project, class: "btn btn-sm" %>
             <%= link_to '編集', edit_project_path(project), class: "btn btn-sm" %>
-            <% if project.tasks.count != 0 %>
+            <% if project.tasks.size != 0 %>
               <span class="text-muted btn btn-sm" style="pointer-events: none; background: none; border: none; color: inherit;">削除</span>
             <% else %>
               <%= button_to '削除', project, method: :delete, data: { turbo_confirm: 'このプロジェクトを削除しますか？' }, class: "btn btn-sm text-black" %>
@@ -35,7 +35,7 @@
       <div class="d-flex">
         <div class="w-1">
           <div class="h-50 border-end"></div>
-          <% if index < project.tasks.count - 1 %>
+          <% if index < project.tasks.size - 1 %>
             <div class="h-50 border-end"></div>
           <% end %>
         </div>

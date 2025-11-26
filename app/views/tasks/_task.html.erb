@@ -4,11 +4,11 @@
       <%= turbo_frame_tag "task_#{task.id}" do %>
         <span style="display: inline-block;">
           <% if task.completed? %>
-            <%= button_to task, method: :patch, params: { task: { task_state_id: TaskState.find_by(name: 'todo').id } }, class: "btn btn-link p-0 border-0", style: "background: none;" do %>
+            <%= button_to task, method: :patch, params: { task: { task_state_id: TaskState.todo.id } }, class: "btn btn-link p-0 border-0", style: "background: none;" do %>
               <i class="far fa-check-circle" style="color: <%= task.state.color %>; cursor: pointer;"></i>
             <% end %>
           <% else %>
-            <%= button_to task, method: :patch, params: { task: { task_state_id: TaskState.find_by(name: 'done').id } }, class: "btn btn-link p-0 border-0", style: "background: none;" do %>
+            <%= button_to task, method: :patch, params: { task: { task_state_id: TaskState.todo.id } }, class: "btn btn-link p-0 border-0", style: "background: none;" do %>
               <i class="far fa-dot-circle" style="color: <%= task.state.color %>; cursor: pointer;"></i>
             <% end %>
           <% end %>
