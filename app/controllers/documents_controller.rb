@@ -3,34 +3,15 @@ class DocumentsController < ApplicationController
   before_action :set_document, only: %i[ show edit update destroy ]
   protect_from_forgery :except => [:api_markdown]
 
-  def search_check(param)
-    if param.present?
-      key_words = param.split(/[\p{blank}\s]+/)
-      grouping_hash = key_words.reduce({}) {|hash, word| hash.merge(word => {content_or_creator_screen_name_or_description_or_project_name_or_location_cont: word})}
-    else
-      nil
-    end
-  end
-
-  def sort_check(param)
-    if param.present?
-      sort_column = []
-      sort_column << param
-    else
-      "start_at DESC"
-    end
-  end
-
   # GET /documents or /documents.json
   def index
-    if params[:q].nil?
-      @q = Document.ransack(params[:q])
-      @q.sorts = "start_at DESC"
-    else
-      @q = Document.ransack({combinator: 'and', groupings: search_check(params[:q][:content_or_creator_screen_name_or_description_or_project_name_or_location_cont])})
-      @q.sorts = sort_check(params[:q][:s])
-    end  
-    @documents = @q.result.page(params[:page]).per(50).includes(:user)
+    search_query = { combinator: "and", groupings: split_into_search_queries(params.dig(:q, :text_cont)) }
+    search_query.merge!({ tags_id_eq: params[:tag_id] }) if params[:tag_id].present?
+
+    @q = Document.ransack(search_query)
+    @q.sorts = build_sort_query_with_default(params.dig(:q, :s))
+    @documents = @q.result.page(params[:page]).per(50).includes(:user, :creator, :project, :tags)
+    @tags = Tag.all
   end
 
   # GET /documents/1 or /documents/1.json
@@ -130,4 +111,26 @@ class DocumentsController < ApplicationController
     end
   end
 
+  # Build ransack AND search query from params
+  # Example: { text_cont: "foo bar" } => [{ text_cont: "foo" }, { text_cont: "bar" }]
+  def split_into_search_queries(param)
+    return nil if param.nil? || param.blank?
+
+    # Split keyword and build AND search condition
+    queries = []
+    words = param.split(/[\p{blank}\s]+/)
+    words.each do |word|
+      queries << { text_cont: word }
+    end
+
+    queries
+  end
+
+  def build_sort_query_with_default(param)
+    if param.present?
+      param
+    else
+      "start_at DESC"
+    end
+  end
 end

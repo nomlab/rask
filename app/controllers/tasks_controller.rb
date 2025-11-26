@@ -3,43 +3,22 @@ class TasksController < ApplicationController
   before_action :set_task, only: %i[ show edit update destroy ]
   before_action :get_form_data, only: %i[ new edit ]
 
-  def search_check(param)
-    if param.present?
-      key_words = param.split(/[\p{blank}\s]+/)
-      grouping_hash = key_words.reduce({}) { |hash, word| hash.merge(word => { content_or_assigner_screen_name_or_description_or_project_name_cont: word }) }
-    else
-      nil
-    end
-  end
-
-  def sort_check(param)
-    if param.present?
-      sort_column = []
-      sort_column << "state.priority DESC" << param
-    else
-      "state.priority DESC"
-    end
-  end
-
   # GET /tasks or /tasks.json
   def index
-    if params[:q].nil?
-      @q = Task.joins(:state).ransack(params[:q])
-      @q.sorts = ["state.priority DESC", "due_at ASC"]
-    else
-      @q = Task.joins(:state).ransack({combinator: 'and', groupings: search_check(params[:q][:content_or_assigner_screen_name_or_description_or_project_name_cont])})
-      @q.sorts = sort_check(params[:q][:s])
-    end
+    search_query = { combinator: "and", groupings: split_into_search_queries(params.dig(:q, :text_cont)) }
 
-    @show_all = params[:all] == 'true'
-    tasks_query = @q.result
+    session[:show_all] = params[:all] == 'true' if params[:all].present?
+    search_query.merge!({ assigner_id_eq: current_user.id }) unless session[:show_all]
 
-    if params[:only_todo] == '1'
-      tasks_query = tasks_query.merge(Task.active)
-    end
-    
-    tasks_query = tasks_query.joins(:user).where(users: {screen_name: current_user&.screen_name}) unless @show_all
-    @tasks = tasks_query.page(params[:page]).per(50).includes(:user, :state)
+    session[:only_todo] = params[:only_todo] if params[:only_todo].present?
+    search_query.merge!({ task_state_id_eq: TaskState.where(name: "todo").first.id }) if session[:only_todo] == "1"
+
+    search_query.merge!({ tags_id_eq: params[:tag_id] }) if params[:tag_id].present?
+
+    @q = Task.ransack(search_query)
+    @q.sorts = build_sort_query_with_default(params.dig(:q, :s))
+    @tasks = @q.result.page(params[:page]).per(50).includes(:user, :project, :tags, :assigner, :state)
+    @tags = Tag.all
   end
 
   # GET /tasks/1 or /tasks/1.json
@@ -135,5 +114,30 @@ class TasksController < ApplicationController
       tag = Tag.find_by(name: tag_name)
       tag ? tag : Tag.create(name: tag_name)
     end
+  end
+
+  # Build ransack AND search query from params
+  # Example: { text_cont: "foo bar" } => [{ text_cont: "foo" }, { text_cont: "bar" }]
+  def split_into_search_queries(param)
+    return nil if param.nil? || param.blank?
+
+    # Split keyword and build AND search condition
+    queries = []
+    words = param.split(/[\p{blank}\s]+/)
+    words.each do |word|
+      queries << { text_cont: word }
+    end
+
+    queries
+  end
+
+  def build_sort_query_with_default(param)
+    query = ["state_priority DESC"]
+    if param.present?
+      query << param
+    else
+      query << "due_at ASC"
+    end
+    query
   end
 end

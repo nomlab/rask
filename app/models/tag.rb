@@ -5,6 +5,10 @@ class Tag < ApplicationRecord
   has_many :documents, through: :document_tags, dependent: :restrict_with_exception
   validates :name, presence: true, uniqueness: true
 
+  def self.ransackable_attributes(auth_object = nil)
+    [ "id", "name" ]
+  end
+
   def self.order_by_popularity
     self.find_by_sql <<~'SQL'
       SELECT

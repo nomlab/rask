@@ -1,3 +1,7 @@
+<% content_for :tag_list do %>
+  <%= render partial: "layouts/tag_list", locals: { base_link: request.original_url } %>
+<% end %>
+
 <div class="d-flex align-items-center">
   <%= render 'layouts/h1', title: "タスク一覧" %>
   <div class="flex-grow-1"></div>
@@ -18,11 +22,11 @@
 
   <div class="border p-3 my-3 rounded d-flex align-items-center gap-3">
     <%= search_form_for @q, class: "d-flex align-items-center w-100" do |f| %>
-      <%= f.text_field :content_or_assigner_screen_name_or_description_or_project_name_cont, 
-        class: "form-control me-2", 
-        placeholder: '検索ワードを入力して下さい', 
+      <%= f.text_field :text_cont,
+        class: "form-control me-2",
+        placeholder: '検索ワードを入力して下さい',
         style: "flex: 1;" %>
-      <%= hidden_field_tag :only_todo, params[:only_todo] if params[:only_todo].present? %>
+      <%= preserve_other_params(except: [:q]) %>
       <%= f.submit "検索", class: "btn btn-primary" %>
     <% end %>
   </div>
@@ -31,25 +35,25 @@
 </div>
 
 <%= form_with url: request.path, method: :get, local: true, html: { class: "d-flex" } do %>
-  <%= check_box_tag :only_todo, "1", params[:only_todo] == "1", onchange: "this.form.submit()" %>
+  <%= preserve_other_params(except: [:only_todo]) %>
+  <%= hidden_field_tag :only_todo, session[:only_todo] == '1' ? '0' : '1' %>
+  <%= check_box_tag "", "", checked: session[:only_todo] == "1", onchange: "this.form.submit()" %>
   <div class="mx-1">
     todoのみ
   </div>
-
-  <% if params[:q].present? %>
-    <% params[:q].each do |key, value| %>
-      <%= hidden_field_tag "q[#{key}]", value %>
-    <% end %>
-  <% end %>
 <% end %>
 
-<% current_q_params = request.query_parameters.except(:controller, :action, :page) %>
 <ul class="text-center nav nav-tabs" role="tablist">
   <li class="nav-item w-50 bg-light">
-    <%= link_to "#{current_user&.screen_name}のタスク", tasks_path(current_q_params.merge(all: 'false')), class: "nav-link #{'active' if !@show_all} link-text" %>
+    <%= link_to "#{current_user&.screen_name}のタスク",
+        url_with_query(request.original_url, "all", "false"),
+        class: "nav-link #{'active' if !session[:show_all]} link-text" %>
   </li>
+
   <li class="nav-item w-50 bg-light">
-    <%= link_to 'すべてのタスク', tasks_path(current_q_params.merge(all: 'true')), class: "nav-link #{'active' if @show_all} link-text" %>
+    <%= link_to 'すべてのタスク',
+        url_with_query(request.original_url, "all", "true"),
+        class: "nav-link #{'active' if session[:show_all]} link-text" %>
   </li>
 </ul>
 
@@ -58,7 +62,7 @@
     <%= render @tasks %>
     <div class="row">
       <div class="col-md-12 col-sm-12 text-center hidden-xs">
-        <%= raw(paginate @tasks, params: current_q_params) %>
+        <%= raw(paginate @tasks) %>
       </div>
     </div>
   </div>

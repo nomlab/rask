@@ -14,8 +14,10 @@ class Document < ApplicationRecord
   #validates :project, presence: true
   before_validation :add_unique_action_item_marker
 
+  ransack_alias :text, :content_or_creator_screen_name_or_description_or_project_name_or_location_cont
+
   def self.ransackable_attributes(auth_object = nil)
-    ["content", "created_at", "creator_id", "description", "end_at", "id", "location", "project_id", "start_at", "updated_at"]
+    ["content", "created_at", "creator_id", "description", "end_at", "id", "location", "project_id", "start_at", "updated_at", "text"]
   end
 
   def self.ransackable_associations(auth_object = nil)

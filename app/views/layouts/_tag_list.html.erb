@@ -1,8 +1,11 @@
-<div class="border mx-auto p-3 overflow-auto">
-  <p class="fw-bold fs-4 mb-3">タグ一覧</p>
-  <div class="d-flex flex-wrap gap-1">
-    <% Tag.order_by_popularity.each do |tag| %>
-      <%= link_to tag_label(tag), tag, class: "btn btn-primary btn-outline-primary" %>
-    <% end %>
+<aside class="col-md-3 p-3">
+  <div class="border mx-auto p-3 overflow-auto">
+    <p class="fw-bold fs-4 mb-3">タグ一覧</p>
+    <div class="d-flex flex-wrap gap-1">
+      <% Tag.order_by_popularity.each do |tag| %>
+        <% link = base_link.present? ? url_with_query(base_link, "tag_id", tag.id) : tag_path(tag) %>
+        <%= link_to tag_label(tag), link, class: "btn btn-primary btn-outline-primary" %>
+      <% end %>
+    </div>
   </div>
-</div>
+</aside>
