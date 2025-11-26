@@ -1,15 +1,15 @@
 <div class="p-3 my-3 border rounded d-flex justify-content-between">
   <div>
     <p class="h4"><%= link_to tag.name, tag, class: "btn btn-primary" %></p>
-    <p>タスク数 : <%= tag.tasks.count %></p>
-    <p>文書数 : <%= tag.documents.count %></p>
+    <p>タスク数 : <%= tag.tasks.size %></p>
+    <p>文書数 : <%= tag.documents.size %></p>
   </div>
   <div class="flex-grow-1"></div>
   <% if logged_in? %>
     <div class="d-flex align-items-center">
       <%= link_to '詳細', tag, class: "btn btn-sm text-black" %>
       <%= link_to '編集', edit_tag_path(tag), class: "btn btn-sm mx-2 text-black" %>
-      <% if tag.tasks.count == 0 && tag.documents.count == 0 %>
+      <% if tag.tasks.size == 0 && tag.documents.size == 0 %>
         <%= button_to '削除', tag, method: :delete, data: { turbo_confirm: 'このタグを削除しますか？' }, class: "btn btn-sm text-black" %>
       <% else %>
         <p class="btn btn-sm text-muted mb-0" style="pointer-events: none; background: none; border: none; color: inherit;">削除</p>
