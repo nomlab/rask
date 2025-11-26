@@ -1,5 +1,5 @@
 <% content_for :tag_list do %>
-  <%= render partial: "layouts/tag_list", locals: { base_link: documents_path } %>
+  <%= render partial: "layouts/tag_list", locals: { base_link: request.original_url } %>
 <% end %>
 
 <div class="d-flex align-items-center">
@@ -26,6 +26,7 @@
         class: "form-control me-2",
         placeholder: '検索ワードを入力して下さい',
         style: "flex: 1;" %>
+      <%= preserve_other_params(except: [:q]) %>
       <%= f.submit "検索", class: "btn btn-primary" %>
     <% end %>
   </div>

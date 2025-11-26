@@ -5,11 +5,14 @@ class TasksController < ApplicationController
 
   # GET /tasks or /tasks.json
   def index
-    @show_all = params[:all] == 'true'
-
     search_query = { combinator: "and", groupings: split_into_search_queries(params.dig(:q, :text_cont)) }
-    search_query.merge!({ assigner_id_rq: current_user.id }) unless @show_all
-    search_query.merge!({ task_state_id_eq: TaskState.where(name: "todo").first.id }) if params[:only_todo] == "1"
+
+    session[:show_all] = params[:all] == 'true' if params[:all].present?
+    search_query.merge!({ assigner_id_eq: current_user.id }) unless session[:show_all]
+
+    session[:only_todo] = params[:only_todo] if params[:only_todo].present?
+    search_query.merge!({ task_state_id_eq: TaskState.where(name: "todo").first.id }) if session[:only_todo] == "1"
+
     search_query.merge!({ tags_id_eq: params[:tag_id] }) if params[:tag_id].present?
 
     @q = Task.ransack(search_query)
