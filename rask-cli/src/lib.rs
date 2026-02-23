@@ -1,3 +1,4 @@
+pub mod api_token;
 mod client;
 pub mod project;
 pub mod task;
