@@ -1,6 +1,7 @@
 # coding: utf-8
 class DocumentsController < ApplicationController
   before_action :set_document, only: %i[ show edit update destroy ]
+  before_action :get_form_data, only: %i[ new edit ]
   protect_from_forgery :except => [:api_markdown]
 
   # GET /documents or /documents.json
@@ -26,9 +27,6 @@ class DocumentsController < ApplicationController
   # GET /documents/new
   def new
     @document = Document.new
-    @users = User.where(active: true)
-    @projects = Project.all
-    @tags = Tag.all
     # TODO: バージョン7.1以降では datetime_field に include_seconds オプションが導入されるため，以下の秒を0にする記述は不要になる
     @document.start_at = DateTime.current.change(sec: 0)
     @document.end_at = DateTime.current.change(sec: 0)
@@ -41,9 +39,6 @@ class DocumentsController < ApplicationController
 
   # GET /documents/1/edit
   def edit
-    @users = User.where(active: true)
-    @projects = Project.all
-    @tags = Tag.all
   end
 
   # POST /documents or /documents.json
@@ -51,13 +46,15 @@ class DocumentsController < ApplicationController
     @document = current_user.documents.build(document_params)
     parse_tag_names(params[:tag_names]) if params[:tag_names]
 
-    if @document.save #XXX: save! => save
+    if @document.save
       respond_to do |format|
         format.html { redirect_to @document, notice: "文書を追加しました" }
         format.json { render :show, status: :created, location: @document }
       end
     else
       respond_to do |format|
+        flash.now[:danger] = '文書の作成に失敗しました．'
+        get_form_data
         format.html { render :new, status: :unprocessable_entity }
         format.json { render json: @document.errors, status: :unprocessable_entity }
       end
@@ -66,15 +63,28 @@ class DocumentsController < ApplicationController
 
   # PATCH/PUT /documents/1 or /documents/1.json
   def update
-    parse_tag_names(params[:tag_names]) if params[:tag_names]
-    if @document.update(document_params)
-      flash[:success] = "文書を更新しました"
-      redirect_to @document
-    else
-      respond_to do |format|
-        format.html { render :edit, status: :unprocessable_entity }
-        format.json { render json: @document.errors, status: :unprocessable_entity }
-      end
+    @document.transaction do
+      parse_tag_names(params[:tag_names]) if params[:tag_names]
+      @document.update!(document_params)
+    end
+
+    respond_to do |format|
+      format.html { redirect_to @document, notice: '文書を更新しました' }
+      format.json { render :show, status: :ok }
+    end
+  rescue ActiveRecord::StaleObjectError
+    flash.now[:danger] = 'この文書は他のユーザーによって更新されました．'
+    get_form_data
+    respond_to do |format|
+      format.html { render :edit, status: :conflict }
+      format.json { render json: { error: flash[:error] }, status: :conflict }
+    end
+  rescue
+    flash.now[:danger] = '文書の更新に失敗しました．'
+    get_form_data
+    respond_to do |format|
+      format.html { render :edit, status: :unprocessable_entity }
+      format.json { render json: @document.errors, status: :unprocessable_entity }
     end
   end
 
@@ -101,7 +111,7 @@ class DocumentsController < ApplicationController
 
   # Only allow a list of trusted parameters through.
   def document_params
-    params.require(:document).permit(:creator_id, :content, :description, :project_id, :start_at, :end_at, :location, :text,)
+    params.require(:document).permit(:creator_id, :content, :description, :project_id, :start_at, :end_at, :location, :text, :lock_version)
   end
 
   def parse_tag_names(tag_names)
@@ -132,5 +142,11 @@ class DocumentsController < ApplicationController
     else
       "start_at DESC"
     end
+  end
+
+  def get_form_data
+    @users = User.where(active: true)
+    @projects = Project.all
+    @tags = Tag.all
   end
 end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2023_08_24_085144) do
+ActiveRecord::Schema[7.2].define(version: 2026_02_19_050805) do
   create_table "action_items", force: :cascade do |t|
     t.integer "uid"
     t.string "task_url"
@@ -44,6 +44,7 @@ ActiveRecord::Schema[7.2].define(version: 2023_08_24_085144) do
     t.text "location"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "lock_version"
     t.index ["project_id"], name: "index_documents_on_project_id"
   end
 

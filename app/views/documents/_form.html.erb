@@ -10,6 +10,8 @@
     </div>
   <% end %>
 
+  <%= form.hidden_field :lock_version %>
+
   <div class="mb-4">
     <%= form.label :content, "文書名", class: "form-label fw-bold mb-2" %>
     <%= form.text_field :content, class: "form-control", placeholder: "文書名を入力してください", required: true %>
