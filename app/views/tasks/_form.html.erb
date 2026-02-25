@@ -10,6 +10,8 @@
     </div>
   <% end %>
 
+  <%= form.hidden_field :lock_version %>
+
   <div class="mb-4">
     <%= form.label :assigner_id, "担当者", class: "form-label fw-bold" %>
     <%= form.select :assigner_id, @users.map { |u| [u.screen_name, u.id] }, {}, class: "form-select" %>
