@@ -48,7 +48,7 @@ class TasksController < ApplicationController
     @task = current_user.tasks.build(task_params)
     parse_tag_names(params[:tag_names]) if params[:tag_names]
 
-    if @task.save!
+    if @task.save
       matched = task_params[:description].match(/\[AI([0-9]+)\]/)
       if matched != nil
         ActionItem.find(matched[1]).update(task_url: tasks_path + "/" + @task.id.to_s)
@@ -59,6 +59,8 @@ class TasksController < ApplicationController
       end
     else
       respond_to do |format|
+        flash.now[:danger] = 'タスクの作成に失敗しました．'
+        get_form_data
         format.html { render :new, status: :unprocessable_entity }
         format.json { render json: @task.errors, status: :unprocessable_entity }
       end
@@ -67,17 +69,28 @@ class TasksController < ApplicationController
 
   # PATCH/PUT /tasks/1 or /tasks/1.json
   def update
-    parse_tag_names(params[:tag_names]) if params[:tag_names]
-    if @task.update(task_params)
-      respond_to do |format|
-        format.html { redirect_to @task, notice: "タスクを更新しました．" }
-        format.json { render :show, status: :ok, location: @task }
-      end
-    else
-      respond_to do |format|
-        format.html { render :edit, status: :unprocessable_entity }
-        format.json { render json: @task.errors, status: :unprocessable_entity }
-      end
+    @task.transaction do
+      parse_tag_names(params[:tag_names]) if params[:tag_names]
+      @task.update!(task_params)
+    end
+
+    respond_to do |format|
+      format.html { redirect_to @task, notice: "タスクを更新しました．" }
+      format.json { render :show, status: :ok, location: @task }
+    end
+  rescue ActiveRecord::StaleObjectError
+    flash.now[:danger] = 'このタスクは他のユーザーによって更新されました．'
+    get_form_data
+    respond_to do |format|
+      format.html { render :edit, status: :conflict }
+      format.json { render json: { error: flash[:error] }, status: :conflict }
+    end
+  rescue
+    flash.now[:danger] = 'タスクの更新に失敗しました．'
+    get_form_data
+    respond_to do |format|
+      format.html { render :edit, status: :unprocessable_entity }
+      format.json { render json: @document.errors, status: :unprocessable_entity }
     end
   end
 
@@ -106,7 +119,7 @@ class TasksController < ApplicationController
 
   # Only allow a list of trusted parameters through.
   def task_params
-    params.require(:task).permit(:assigner_id, :due_at, :content, :description, :project_id, :task_state_id)
+    params.require(:task).permit(:assigner_id, :due_at, :content, :description, :project_id, :task_state_id, :lock_version)
   end
 
   def parse_tag_names(tag_names)
