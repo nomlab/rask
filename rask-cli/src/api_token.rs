@@ -36,15 +36,4 @@ impl ApiToken {
             .json()
             .map_err(|e| Error::JsonDecode(e.to_string()))
     }
-
-    pub fn find_by_name<S: AsRef<str>>(name: S) -> Result<UserResponse> {
-        let users = Self::list()?;
-        users
-            .into_iter()
-            .find(|i| i.name == name.as_ref())
-            .ok_or(Error::NotFound(
-                name.as_ref().to_string(),
-                "User".to_string(),
-            ))
-    }
 }

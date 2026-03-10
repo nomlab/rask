@@ -24,7 +24,7 @@ pub struct TaskResponse {
     pub content: String,
     pub state: Option<TaskState>,
     pub description: Option<String>,
-    pub deu_at: Option<String>,
+    pub due_at: Option<String>,
     pub created_at: String,
     pub updated_at: String,
     pub creator: IdNameSet,
