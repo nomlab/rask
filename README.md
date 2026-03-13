@@ -180,3 +180,7 @@ rask の開発には docker-compose を使用する．
     ```bash
     sudo systemctl enable rask-autoupdate.timer
     ```
+
+## [CLI](./cli)
+* Rask の API を利用してコマンドラインから Rask を操作できる CLI ツール
+* 詳細は [こちら](./cli/README.md)
