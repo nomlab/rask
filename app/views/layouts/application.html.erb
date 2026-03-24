@@ -17,6 +17,7 @@
     <%= yield(:js) %>
     <!-- yield:js end here -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
     <%= stylesheet_link_tag "tab", "data-turbo-track": "reload" %>
     <%= stylesheet_link_tag "tasks", "data-turbo-track": "reload" %>
@@ -35,15 +36,20 @@
       </div>
     <% end %>
 
-    <div class="container-fluid">
-      <div class="row">
-        <%= yield :tag_list %>
+    <div class="container my-5">
+      <div class="row <%= 'justify-content-center' unless content_for?(:tag_list) %>">
 
-        <main class="col-md-9">
-          <div class="container p-5">
+        <% if content_for?(:tag_list) %>
+          <%= yield :tag_list %>
+          <main class="col-md-9">
             <%= yield %>
-          </div>
-        </main>
+          </main>
+        <% else %>
+          <main class="col-md-10 col-lg-8">
+            <%= yield %>
+          </main>
+        <% end %>
+
       </div>
     </div>
   </body>

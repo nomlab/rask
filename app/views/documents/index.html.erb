@@ -2,41 +2,82 @@
   <%= render partial: "layouts/tag_list", locals: { base_link: request.original_url } %>
 <% end %>
 
-<div class="d-flex align-items-center">
+<div class="d-flex flex-column flex-md-row align-items-md-center mb-3">
   <%= render 'layouts/h1', title: "文書一覧" %>
   <div class="flex-grow-1"></div>
 
-  <div class="border p-3 my-3 rounded d-flex gap-3">
-    <table class="table mb-0">
-      <thead>
-        <tr>
-          <th>ソート：</th>
-          <th><%= sort_link(@q, :content, "タイトル順") %></th>
-          <th><%= sort_link(@q, :updated_at, "更新順") %></th>
-          <th><%= sort_link(@q, :created_at, "作成順") %></th>
-          <th><%= sort_link(@q, :start_at, "開始時刻順") %></th>
-        </tr>
-      </thead>
-    </table>
+  <div class="d-flex align-items-center gap-2 px-3 py-2">
+    <select id="sortSelect" class="form-select form-select-sm border-secondary" style="width: auto;" onchange="handleSortChange(this)">
+      <% sort_options.each do |option| %>
+        <option value="<%= option[:value] %>" <%= 'selected' if current_sort_value(@q) == option[:value] %>>
+          <%= option[:label] %>
+        </option>
+      <% end %>
+    </select>
   </div>
 
-  <div class="border p-3 my-3 rounded d-flex align-items-center gap-3">
-    <%= search_form_for @q, class: "d-flex align-items-center w-100" do |f| %>
-      <%= f.text_field :text_cont,
-        class: "form-control me-2",
-        placeholder: '検索ワードを入力して下さい',
-        style: "flex: 1;" %>
-      <%= preserve_other_params(except: [:q]) %>
-      <%= f.submit "検索", class: "btn btn-primary" %>
+  <div class="d-flex align-items-center gap-3">
+    <% if params[:q].present? && params[:q][:text_cont].present? %>
+      <%= link_to documents_path(request.query_parameters.except(:q)), class: "btn btn-link p-0 text-secondary", title: "検索をクリア" do %>
+        <i class="bi bi-x-circle"></i>
+      <% end %>
+    <% else %>
+      <button id="toggleSearch" class="btn btn-link p-0 text-primary" type="button" onclick="toggleSearchBox()" title="検索">
+        <i class="bi bi-search"></i>
+      </button>
+    <% end %>
+
+    <%= link_to new_document_path, class: "text-decoration-none text-primary", title: "文書を作成" do %>
+      <i class="bi bi-file-earmark-plus"></i>
     <% end %>
   </div>
-
-  <%= link_to "クリア", documents_path(), class: "btn btn-outline-primary ms-3" %>
-
-  <%= link_to '新規作成', new_document_path, class: "btn btn-danger ms-3" %>
 </div>
 
-<%= render @documents %>
+<div id="searchBox" class="border border-primary bg-primary-subtle p-3 my-3 rounded" style="display: <%= params[:q].present? && params[:q][:text_cont].present? ? 'block' : 'none' %>;">
+  <%= search_form_for @q, class: "d-flex align-items-center w-100" do |f| %>
+    <%= f.text_field :text_cont,
+      class: "form-control me-2 border-primary",
+      placeholder: '検索ワードを入力して下さい',
+      style: "flex: 1;" %>
+    <%= preserve_other_params(except: [:q]) %>
+    <%= f.submit "検索", class: "btn btn-primary" %>
+  <% end %>
+</div>
+
+<script>
+  function handleSortChange(select) {
+    const value = select.value;
+    const lastUnderscoreIndex = value.lastIndexOf('_');
+    const field = value.substring(0, lastUnderscoreIndex);
+    const direction = value.substring(lastUnderscoreIndex + 1);
+    
+    const url = new URL(window.location);
+    url.searchParams.set('q[s]', `${field} ${direction}`);
+    
+    window.location.href = url.toString();
+  }
+
+  function toggleSearchBox() {
+    const searchBox = document.getElementById('searchBox');
+    if (searchBox) {
+      if (searchBox.style.display === 'none' || searchBox.style.display === '') {
+        searchBox.style.display = 'block';
+        const input = searchBox.querySelector('input[type="text"]');
+        if (input) input.focus();
+      } else {
+        searchBox.style.display = 'none';
+      }
+    }
+  }
+</script>
+
+<div class="row">
+  <% @documents.each do |document| %>
+    <div class="col-md-6 col-lg-4 mb-3">
+      <%= render partial: 'document', locals: { document: document } %>
+    </div>
+  <% end %>
+</div>
 
 <div class="row">
   <div class="col-12 text-center">

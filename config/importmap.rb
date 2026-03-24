@@ -11,3 +11,5 @@ pin "textarea-caret" # @3.1.0
 pin "undate/lib/update", to: "undate--lib--update.js" # @0.2.4
 pin "tag_completion"
 pin "documents", to: "documents.js"
+pin "bootstrap", to: "bootstrap.min.js", preload: true
+pin "@popperjs/core", to: "popper.js", preload: true

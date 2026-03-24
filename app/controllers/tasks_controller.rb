@@ -7,11 +7,11 @@ class TasksController < ApplicationController
   def index
     search_query = { combinator: "and", groupings: split_into_search_queries(params.dig(:q, :text_cont)) }
 
-    session[:show_all] = params[:all] == 'true' if params[:all].present?
+    session[:show_all] = params[:all] == "true" if params[:all].present?
     search_query.merge!({ assigner_id_eq: current_user.id }) unless session[:show_all]
 
     session[:only_todo] = params[:only_todo] if params[:only_todo].present?
-    search_query.merge!({ task_state_id_eq: TaskState.todo.id }) if session[:only_todo] == "1"
+    search_query.merge!({ task_state_id_eq: TaskState.todo.id }) if session[:only_todo] != "0"
 
     search_query.merge!({ tags_id_eq: params[:tag_id] }) if params[:tag_id].present?
 
