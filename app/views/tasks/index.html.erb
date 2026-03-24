@@ -2,46 +2,80 @@
   <%= render partial: "layouts/tag_list", locals: { base_link: request.original_url } %>
 <% end %>
 
-<div class="d-flex align-items-center">
+<div class="d-flex flex-column flex-md-row align-items-md-center mb-3">
   <%= render 'layouts/h1', title: "タスク一覧" %>
   <div class="flex-grow-1"></div>
 
-  <div class="border p-3 my-3 rounded d-flex gap-3">
-    <table class="table mb-0">
-      <thead>
-        <tr>
-          <th>ソート：</th>
-          <th><%= sort_link(@q, :updated_at, "更新順", class: "link-primary") %></th>
-          <th><%= sort_link(@q, :created_at, "作成順", class: "link-primary") %></th>
-          <th><%= sort_link(@q, :due_at, "期限順", class: "link-primary") %></th>
-          <th><%= sort_link(@q, :project_id, "プロジェクト名順", class: "link-primary") %></th>
-        </tr>
-      </thead>
-    </table>
+  <div class="d-flex align-items-center gap-2 px-3 py-2">
+    <select id="sortSelect" class="form-select form-select-sm task-sort-select" onchange="handleTaskSortChange(this)">
+      <% sort_options.each do |option| %>
+        <option value="<%= option[:value] %>" <%= 'selected' if current_sort_value(@q) == option[:value] %>>
+          <%= option[:label] %>
+        </option>
+      <% end %>
+    </select>
   </div>
 
-  <div class="border p-3 my-3 rounded d-flex align-items-center gap-3">
-    <%= search_form_for @q, class: "d-flex align-items-center w-100" do |f| %>
-      <%= f.text_field :text_cont,
-        class: "form-control me-2",
-        placeholder: '検索ワードを入力して下さい',
-        style: "flex: 1;" %>
-      <%= preserve_other_params(except: [:q]) %>
-      <%= f.submit "検索", class: "btn btn-primary" %>
+  <div class="d-flex align-items-center gap-3">
+    <% if params[:q].present? && params[:q][:text_cont].present? %>
+      <%= link_to tasks_path(request.query_parameters.except(:q)), class: "btn btn-link p-0 task-icon-btn-muted", title: "検索をクリア" do %>
+        <i class="bi bi-x-circle"></i>
+      <% end %>
+    <% else %>
+      <button id="toggleTaskSearch" class="btn btn-link p-0 task-icon-btn-primary" type="button" onclick="toggleTaskSearchBox()" title="検索">
+        <i class="bi bi-search"></i>
+      </button>
+    <% end %>
+
+    <%= link_to new_task_path, class: "text-decoration-none", style: "color: var(--color-primary);", title: "タスクを作成" do %>
+      <i class="bi bi-file-earmark-plus"></i>
     <% end %>
   </div>
-
-  <%= link_to "クリア", tasks_path(), class: "btn btn-outline-primary ms-3" %>
-
-  <%= link_to '新規作成', new_task_path, class: "btn btn-danger ms-3" %>
 </div>
 
-<%= form_with url: request.path, method: :get, local: true, html: { class: "d-flex" } do %>
+<div id="taskSearchBox" class="task-toolbar-panel mb-3" style="display: <%= params[:q].present? && params[:q][:text_cont].present? ? 'flex' : 'none' %>;">
+  <%= search_form_for @q, class: "d-flex align-items-center w-100" do |f| %>
+    <%= f.text_field :text_cont,
+      class: "form-control me-2",
+      placeholder: '検索ワードを入力して下さい' %>
+    <%= preserve_other_params(except: [:q]) %>
+    <%= f.submit "検索", class: "btn btn-primary" %>
+  <% end %>
+</div>
+
+<script>
+  function handleTaskSortChange(select) {
+    const value = select.value;
+    const lastUnderscoreIndex = value.lastIndexOf('_');
+    const field = value.substring(0, lastUnderscoreIndex);
+    const direction = value.substring(lastUnderscoreIndex + 1);
+
+    const url = new URL(window.location);
+    url.searchParams.set('q[s]', `${field} ${direction}`);
+
+    window.location.href = url.toString();
+  }
+
+  function toggleTaskSearchBox() {
+    const searchBox = document.getElementById('taskSearchBox');
+    if (searchBox) {
+      if (searchBox.style.display === 'none' || searchBox.style.display === '') {
+        searchBox.style.display = 'flex';
+        const input = searchBox.querySelector('input[type="text"]');
+        if (input) input.focus();
+      } else {
+        searchBox.style.display = 'none';
+      }
+    }
+  }
+</script>
+
+<%= form_with url: request.path, method: :get, local: true, html: { class: "d-flex align-items-center mb-3" } do %>
   <%= preserve_other_params(except: [:only_todo]) %>
-  <%= hidden_field_tag :only_todo, session[:only_todo] == '1' ? '0' : '1' %>
-  <%= check_box_tag "", "", checked: session[:only_todo] == "1", onchange: "this.form.submit()" %>
-  <div class="mx-1">
-    todoのみ
+  <%= hidden_field_tag :only_todo, session[:only_todo] == '0' ? '1' : '0' %>
+  <%= check_box_tag "", "", checked: session[:only_todo] == "0", onchange: "this.form.submit()" %>
+  <div class="mx-1 text-muted small">
+    完了済タスクも表示
   </div>
 <% end %>
 
@@ -61,7 +95,13 @@
 
 <div class="tab-content">
   <div class="tab-pane show active" id="tasks" role="tabpanel">
-    <%= render @tasks %>
+    <div class="row g-3 mt-1">
+      <% @tasks.each do |task| %>
+        <div class="col-12 col-md-6 col-xl-4">
+          <%= render partial: "task", locals: { task: task } %>
+        </div>
+      <% end %>
+    </div>
     <div class="row">
       <div class="col-md-12 col-sm-12 text-center hidden-xs">
         <%= raw(paginate @tasks) %>
@@ -69,9 +109,3 @@
     </div>
   </div>
 </div>
-
-<style>
-  .text-black {
-    text-decoration: none;
-  }
-</style>

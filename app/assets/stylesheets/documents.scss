@@ -1,0 +1,86 @@
+.card {
+  border: 1px solid var(--bs-gray-200);
+  border-radius: var(--bs-border-radius);
+  transition: all 0.2s ease;
+  position: relative;
+  cursor: pointer;
+  background: white;
+}
+.card:hover {
+  box-shadow: var(--bs-box-shadow-lg);
+  border-color: var(--bs-primary);
+}
+.card-link::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
+}
+.creator-badge,
+.creator-badge a,
+.card-body a:not(.card-link),
+.btn {
+  position: relative;
+  z-index: 2;
+}
+.card-title {
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: var(--bs-dark);
+}
+.text-black {
+  color: var(--bs-dark);
+  text-decoration: none;
+}
+.tag-badge {
+  border: 1px solid var(--bs-primary);
+  border-radius: var(--bs-border-radius-pill);
+  padding: 4px 8px;
+  display: inline-block;
+  background: white;
+  color: var(--bs-primary);
+  font-size: 0.85rem;
+  text-decoration: none;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+.tag-badge:hover {
+  background-color: var(--bs-primary);
+  color: white;
+  border-color: var(--bs-primary);
+  transform: translateY(-1px);
+  box-shadow: var(--bs-box-shadow-sm);
+}
+.creator-badge {
+  border: 1px solid var(--bs-gray-400);
+  border-radius: var(--bs-border-radius-sm);
+  padding: 4px 8px;
+  display: inline-block;
+  transition: all 0.2s ease;
+  background: var(--bs-light);
+  font-size: 0.85rem;
+  color: var(--bs-gray-700);
+}
+.creator-badge:hover {
+  background-color: var(--bs-gray-200);
+  border-color: var(--bs-gray-500);
+}
+.creator-badge i {
+  margin-right: 2px;
+  font-size: 0.9rem;
+}
+.tag-badge i {
+  font-size: 0.75rem;
+}
+.card-body a[title="編集"] {
+  transition: all 0.2s ease;
+  padding: 4px 8px;
+  border-radius: var(--bs-border-radius-sm);
+}
+.card-body a[title="編集"]:hover {
+  color: var(--bs-primary) !important;
+  background-color: var(--bs-primary-bg-subtle);
+}

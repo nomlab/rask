@@ -1,17 +1,23 @@
-<nav class="navbar sticky-top navbar-expand-sm navbar-light bg-danger mb-3 z-50">
-  <%= link_to "Rask", tasks_path, class: "navbar-brand text-black" %>
+<nav class="navbar sticky-top navbar-expand-lg navbar-light bg-danger mb-3 z-50">
+  <%= link_to "Rask", tasks_path, class: "navbar-brand text-black ms-3" %>
+  <button class="navbar-toggler me-3" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
   <div class="collapse navbar-collapse" id="navbarNav">
     <ul class="navbar-nav">
       <li class="nav-item"><%= link_to "プロジェクト", projects_path, method: :get, class: "nav-link text-black" %></li>
-      <li class="nav-item"><%= link_to "タスク一覧", tasks_path, method: :get, class: "nav-link text-black" %></li>
-      <li class="nav-item"><%= link_to "文書一覧", documents_path, method: :get, class: "nav-link text-black" %></li>
-      <li class="nav-item"><%= link_to "タグ一覧", tags_path, method: :get, class: "nav-link text-black" %></li>
-      <li class="nav-item"><%= link_to "ユーザ一覧", users_path, method: :get, class: "nav-link text-black" %></li>
-      <li class="nav-item"><%= link_to "APIトークン一覧", api_tokens_path, method: :get, class: "nav-link text-black" %></li>
+      <li class="nav-item"><%= link_to "タスク", tasks_path, method: :get, class: "nav-link text-black" %></li>
+      <li class="nav-item"><%= link_to "文書", documents_path, method: :get, class: "nav-link text-black" %></li>
+      <li class="nav-item"><%= link_to "タグ", tags_path, method: :get, class: "nav-link text-black" %></li>
+      <li class="nav-item"><%= link_to "ユーザ", users_path, method: :get, class: "nav-link text-black" %></li>
+      <li class="nav-item"><%= link_to "APIトークン", api_tokens_path, method: :get, class: "nav-link text-black" %></li>
       <li class="nav-item"><%= link_to "APIドキュメント", rswag_ui_path, method: :get, class: "nav-link text-black" %></li>
       <li class="nav-item"><%= link_to "Raskについて(GitHub)", 'https://github.com/nomlab/rask/blob/main/README.md', method: :get, class: "nav-link text-black" %></li>
     </ul>
     <ul class="navbar-nav ms-auto">
+      <li class="nav-item">
+        <%= link_to '文書を作成', new_document_path, class: 'btn btn-light me-2' %>
+      </li>
       <li class="nav-item">
         <%= link_to 'タスクを作成', new_task_path, class: 'btn btn-light me-2' %>
       </li>
