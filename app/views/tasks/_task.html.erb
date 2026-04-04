@@ -1,24 +1,24 @@
-<div class="card h-100 task-card <%= 'opacity-50' if task.completed? %>">
+<div id="task_card_<%= task.id %>" class="card h-100 task-card <%= 'opacity-50' if task.completed? %>">
   <div class="card-body d-flex flex-column">
     <div class="d-flex justify-content-between align-items-center mb-3 gap-2">
-      <%= turbo_frame_tag "task_#{task.id}" do %>
+      <%= turbo_frame_tag "task_state_btn_#{task.id}" do %>
         <% if task.completed? %>
           <%= button_to task, method: :patch, params: { task: { task_state_id: TaskState.todo.id } }, class: "btn btn-link p-0 border-0 task-state-btn" do %>
             <i class="far fa-check-circle" style="color: <%= task.state.color %>;"></i>
           <% end %>
         <% else %>
-          <%= button_to task, method: :patch, params: { task: { task_state_id: TaskState.todo.id } }, class: "btn btn-link p-0 border-0 task-state-btn" do %>
+          <%= button_to task, method: :patch, params: { task: { task_state_id: TaskState.done.id } }, class: "btn btn-link p-0 border-0 task-state-btn" do %>
             <i class="far fa-dot-circle" style="color: <%= task.state.color %>;"></i>
           <% end %>
         <% end %>
       <% end %>
-        <% unless task.completed? %>
-          <% if task.overdue? %>
-            <p class="task-deadline task-deadline-overdue">期限切れです！</p>
-          <% else %>
-            <p class="task-deadline task-deadline-ongoing"><%= days_to_deadline_as_string task %></p>
-          <% end %>
+      <% unless task.completed? %>
+        <% if task.overdue? %>
+          <p class="task-deadline task-deadline-overdue">期限切れです！</p>
+        <% else %>
+          <p class="task-deadline task-deadline-ongoing"><%= days_to_deadline_as_string task %></p>
         <% end %>
+      <% end %>
       <small class="text-muted task-creator-badge">
         <i class="bi bi-person-fill"></i>
         <%= link_to task.assigner.name, task.assigner, class: "text-muted text-decoration-none" %>
