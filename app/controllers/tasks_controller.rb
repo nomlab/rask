@@ -89,15 +89,29 @@ class TasksController < ApplicationController
     flash.now[:danger] = 'このタスクは他のユーザーによって更新されました．'
     get_form_data
     respond_to do |format|
+      format.turbo_stream do
+        if turbo_frame_request?
+          render turbo_stream: turbo_stream.replace("task_card_#{@task.id}", partial: "tasks/task", locals: { task: @task }), status: :conflict
+        else
+          render :edit, status: :conflict
+        end
+      end
       format.html { render :edit, status: :conflict }
-      format.json { render json: { error: flash[:error] }, status: :conflict }
+      format.json { render json: { error: flash.now[:danger] }, status: :conflict }
     end
   rescue
     flash.now[:danger] = 'タスクの更新に失敗しました．'
     get_form_data
     respond_to do |format|
+      format.turbo_stream do
+        if turbo_frame_request?
+          render turbo_stream: turbo_stream.replace("task_card_#{@task.id}", partial: "tasks/task", locals: { task: @task }), status: :unprocessable_entity
+        else
+          render :edit, status: :unprocessable_entity
+        end
+      end
       format.html { render :edit, status: :unprocessable_entity }
-      format.json { render json: @document.errors, status: :unprocessable_entity }
+      format.json { render json: @task.errors, status: :unprocessable_entity }
     end
   end
 
