@@ -75,6 +75,7 @@ class TasksController < ApplicationController
     end
 
     respond_to do |format|
+      format.turbo_stream { render :update }
       format.html { redirect_to @task, notice: "タスクを更新しました．" }
       format.json { render :show, status: :ok, location: @task }
     end
