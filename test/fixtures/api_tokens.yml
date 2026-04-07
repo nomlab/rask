@@ -1,13 +1,13 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
-  secret: MyString
-  description: MyString
+  secret: secret_token_for_user_one_abc123
+  description: Token for User One
   expired_at: 2021-08-27 20:27:00
-  user_id: one
+  user: one
 
 two:
-  secret: MyString
-  description: MyString
+  secret: secret_token_for_user_two_xyz789
+  description: Token for User Two
   expired_at: 2021-08-27 20:27:00
-  user_id: two
+  user: two
