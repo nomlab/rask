@@ -9,7 +9,7 @@ class UsersController < ApplicationController
 
   # GET /users/1 or /users/1.json
   def show
-    @api_tokens = @user == current_user ? @user.api_tokens : []
+    @api_tokens = current_user?(@user) ? @user.api_tokens : []
     @assigned_tasks = @user.assigned_tasks.active.desc(5)
   end
 
