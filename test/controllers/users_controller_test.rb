@@ -51,4 +51,33 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
       delete user_url(@user)
     end
   end
+
+  test "should not show own api tokens when viewing other user's page" do
+    user_a = users(:one)
+    user_b = users(:two)
+    log_in_as(user_a)
+    
+    get user_url(user_b)
+    assert_response :success
+    
+    # ユーザーAのAPIトークンのsecretが表示されていないことを確認
+    assert_not_includes @response.body, api_tokens(:one).secret
+    
+    # ユーザーBのAPIトークンのsecretも表示されていないことを確認
+    assert_not_includes @response.body, api_tokens(:two).secret
+  end
+
+  test "should show own api tokens on own user page" do
+    user_a = users(:one)
+    log_in_as(user_a)
+    
+    get user_url(user_a)
+    assert_response :success
+    
+    # ユーザーAのAPIトークンのsecretが表示されていることを確認
+    assert_includes @response.body, api_tokens(:one).secret
+    
+    # ユーザーAのAPIトークンのdescriptionが表示されていることを確認
+    assert_includes @response.body, api_tokens(:one).description
+  end
 end
