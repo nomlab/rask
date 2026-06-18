@@ -5,7 +5,9 @@ namespace :create_user do
     User.create!(
       name:     args.name,
       password: args.password,
-      provider: "local"
+      provider: "local",
+      uid: SecureRandom.hex(10),
+      screen_name: args.name,
     )
     puts "#{args.name}を作成しました。"
   end
