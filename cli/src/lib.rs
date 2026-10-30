@@ -1,5 +1,6 @@
 pub mod api_token;
 mod client;
+pub mod document;
 pub mod project;
 pub mod task;
 pub mod user;
@@ -26,8 +27,8 @@ impl Rask {
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct IdNameSet {
-    id: usize,
-    name: String,
+    pub id: usize,
+    pub name: String,
 }
 
 #[derive(Debug, Error)]
@@ -44,6 +45,8 @@ pub enum Error {
     UrlParse(String),
     #[error("Failed to {0} data, satus: {1}, body: {2}")]
     API(String, String, String),
+    #[error("Failed to parse date: {0}")]
+    DateParse(String),
 }
 
 type Result<T> = std::result::Result<T, Error>;
